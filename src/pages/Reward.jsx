@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MOCK_USER, EC_CONFIG, GIFTS_CATALOG, formatEC, TX_META } from '../data/mockData';
+import { MOCK_USER, EC_CONFIG, GIFTS_CATALOG, PACKAGES, formatEC, TX_META } from '../data/mockData';
 import { ArrowLeft, ShoppingBag, ArrowUpRight, ArrowDownLeft, Gift, ChevronRight, Lock, Sparkles } from 'lucide-react';
 import { useWallet } from '../hooks/useWallet';
 
