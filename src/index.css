@@ -171,13 +171,22 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
 }
 .book-card:active { transform: scale(0.96); }
 .book-cover { 
-    height: 180px; 
+    aspect-ratio: 2 / 3;
+    width: 100%;
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 4rem; 
+    font-size: 3.5rem; 
     position: relative;
-    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+    overflow: hidden;
+}
+
+.book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 .book-cover-badge { position: absolute; top: 12px; right: 12px; background: var(--primary); color: #0D0D2B; font-size: 0.6rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
 .book-info { padding: var(--space-md); }
