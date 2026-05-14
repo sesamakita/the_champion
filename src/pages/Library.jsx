@@ -53,8 +53,8 @@ const Library = ({ navigateTo }) => {
         <div className="books-grid">
           {filtered.map(book => (
             <div key={book.id} className="book-card" onClick={() => navigateTo('book-detail', { bookId: book.id })}>
-              <div className="book-cover" style={{ background: book.cover.startsWith('http') ? 'none' : `linear-gradient(135deg, ${book.color}22, ${book.color}44)` }}>
-                {book.cover.startsWith('http') ? (
+              <div className="book-cover" style={{ background: (book.cover.startsWith('http') || book.cover.startsWith('/')) ? 'none' : `linear-gradient(135deg, ${book.color}22, ${book.color}44)` }}>
+                {(book.cover.startsWith('http') || book.cover.startsWith('/')) ? (
                   <img src={book.cover} alt={book.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
                 ) : (
                   <span>{book.cover}</span>
