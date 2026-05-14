@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, CheckCircle2, CreditCard, Smartphone, Landmark, QrCode, ChevronRight, Sparkles, Loader2, Copy, Share2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, CreditCard, Smartphone, Landmark, QrCode, ChevronRight, Sparkles, Loader2, Copy, Share2, ShieldCheck } from 'lucide-react';
 import { formatCurrency, formatEC } from '../data/mockData';
 import { useWallet } from '../hooks/useWallet';
 
@@ -45,7 +45,7 @@ const TopUp = ({ navigateTo }) => {
 
   if (step === 'success') {
     return (
-      <div className="page-container flex-center fade-in bg-receipt-glow">
+      <div className="page-container flex-center fade-in bg-receipt-glow" style={{ padding: '20px' }}>
         <div className="receipt-container">
           <div className="receipt-ticket">
             {/* Ticket Notches */}
@@ -54,10 +54,10 @@ const TopUp = ({ navigateTo }) => {
             
             <div className="receipt-header">
               <div className="receipt-success-icon">
-                <CheckCircle2 size={32} color="#fff" strokeWidth={3} />
+                <CheckCircle2 size={36} color="#ffffff" strokeWidth={3} />
               </div>
-              <h2 className="receipt-title">Top Up Berhasil</h2>
-              <div className="receipt-amount-ec">{selectedOption.ec} EC</div>
+              <h2 className="receipt-title">Pembayaran Sukses</h2>
+              <div className="receipt-amount-ec">{selectedOption.ec} <span style={{ fontSize: '1.2rem' }}>EC</span></div>
               <div className="receipt-amount-fiat">{formatCurrency(selectedOption.price)}</div>
             </div>
 
@@ -67,40 +67,41 @@ const TopUp = ({ navigateTo }) => {
 
             <div className="receipt-body">
               <div className="receipt-row">
-                <span className="label">Status</span>
-                <span className="value status-success">Berhasil</span>
+                <span className="label">Status Transaksi</span>
+                <span className="value status-success">Success</span>
               </div>
               <div className="receipt-row">
                 <span className="label">Metode Pembayaran</span>
                 <span className="value">{selectedMethod.name}</span>
               </div>
               <div className="receipt-row">
-                <span className="label">ID Transaksi</span>
-                <span className="value mono">CHMP-{Date.now().toString().slice(-8)}</span>
+                <span className="label">Nomor Referensi</span>
+                <span className="value mono">CHMP{Date.now().toString().slice(-8)}</span>
               </div>
               <div className="receipt-row">
-                <span className="label">Waktu</span>
-                <span className="value">Baru Saja</span>
+                <span className="label">Tanggal & Waktu</span>
+                <span className="value">{new Date().toLocaleDateString('id-ID')} • {new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
               </div>
             </div>
 
             <div className="receipt-footer">
-              <p>Simpan tanda terima ini sebagai bukti pembayaran yang sah.</p>
+              <ShieldCheck size={14} color="#64748B" />
+              <span>Transaksi Aman & Terenkripsi</span>
             </div>
           </div>
           
           <div className="receipt-actions">
             <button className="receipt-action-btn">
-              <Copy size={16} /> Salin ID
+              <Copy size={16} /> Copy ID
             </button>
             <button className="receipt-action-btn">
-              <Share2 size={16} /> Bagikan
+              <Share2 size={16} /> Share
             </button>
           </div>
         </div>
 
-        <button className="primary-btn mt-30" style={{ width: '85%' }} onClick={() => navigateTo('reward')}>
-          Kembali ke Wallet
+        <button className="primary-btn mt-30" style={{ width: '100%', maxWidth: '340px' }} onClick={() => navigateTo('reward')}>
+          Selesai
         </button>
       </div>
     );
@@ -261,34 +262,96 @@ const TopUp = ({ navigateTo }) => {
         .processing-subtext { font-size: 0.9rem; color: #94A3B8; max-width: 280px; line-height: 1.6; }
 
         /* Receipt Success Screen */
-        .bg-receipt-glow { background: radial-gradient(circle at center, rgba(16,185,129,0.1), transparent 70%); }
-        .receipt-container { width: 90%; max-width: 340px; filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5)); }
-        .receipt-ticket { background: #fff; border-radius: 24px; padding: 40px 24px 24px; position: relative; color: #1E293B; overflow: hidden; }
-        .notch { position: absolute; width: 24px; height: 24px; background: #0F172A; border-radius: 50%; top: 155px; }
-        .notch-left { left: -12px; }
-        .notch-right { right: -12px; }
+        .bg-receipt-glow { 
+          background: radial-gradient(circle at center, rgba(16,185,129,0.2), transparent 70%), #0F172A; 
+          height: 100vh;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .receipt-container { 
+          width: 90%; 
+          max-width: 340px; 
+          display: flex; 
+          flex-direction: column; 
+          align-items: center; 
+          animation: slideUpReceipt 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUpReceipt {
+          from { transform: translateY(50px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        .receipt-ticket { 
+          width: 100%;
+          background: #ffffff; 
+          border-radius: 30px; 
+          padding: 40px 24px 30px; 
+          position: relative; 
+          color: #1E293B; 
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        /* Notches that actually look like cut-outs */
+        .notch { 
+          position: absolute; 
+          width: 30px; 
+          height: 30px; 
+          background: #0F172A; 
+          border-radius: 50%; 
+          top: 175px; 
+          z-index: 10; 
+          box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        .notch-left { left: -15px; }
+        .notch-right { right: -15px; }
         
-        .receipt-header { text-align: center; margin-bottom: 30px; }
-        .receipt-success-icon { width: 64px; height: 64px; background: #00C896; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 8px 20px rgba(0, 200, 150, 0.4); }
-        .receipt-title { font-size: 1.25rem; font-weight: 800; color: #1E293B; margin-bottom: 15px; }
-        .receipt-amount-ec { font-size: 2.2rem; font-weight: 900; color: #000; line-height: 1; }
-        .receipt-amount-fiat { font-size: 0.9rem; font-weight: 700; color: #64748B; margin-top: 4px; }
+        .receipt-header { text-align: center; margin-bottom: 25px; }
+        .receipt-success-icon { 
+          width: 72px; height: 72px; 
+          background: #10B981; 
+          border-radius: 50%; 
+          display: flex; align-items: center; justify-content: center; 
+          margin: 0 auto 20px; 
+          box-shadow: 0 12px 24px rgba(16, 185, 129, 0.4);
+        }
+        .receipt-title { font-size: 0.9rem; font-weight: 800; color: #10B981; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; }
+        .receipt-amount-ec { font-size: 3rem; font-weight: 900; color: #000; line-height: 1; letter-spacing: -1.5px; }
+        .receipt-amount-fiat { font-size: 1.1rem; font-weight: 700; color: #94A3B8; margin-top: 8px; }
 
-        .receipt-divider { margin: 25px 0; }
-        .dashed-line { border-top: 2px dashed #E2E8F0; width: 100%; }
+        .receipt-divider { 
+          margin: 30px -24px; 
+          height: 2px; 
+          border-top: 3px dashed #F1F5F9; 
+          position: relative;
+        }
 
-        .receipt-body { display: flex; flex-direction: column; gap: 16px; }
-        .receipt-row { display: flex; justify-content: space-between; align-items: center; }
-        .receipt-row .label { font-size: 0.8rem; font-weight: 600; color: #64748B; }
-        .receipt-row .value { font-size: 0.85rem; font-weight: 800; color: #1E293B; }
-        .receipt-row .value.mono { font-family: monospace; font-size: 0.75rem; letter-spacing: 0.5px; }
-        .receipt-row .value.status-success { color: #059669; }
+        .receipt-body { display: flex; flex-direction: column; gap: 20px; }
+        .receipt-row { display: flex; justify-content: space-between; align-items: flex-start; }
+        .receipt-row .label { font-size: 0.8rem; font-weight: 600; color: #94A3B8; }
+        .receipt-row .value { font-size: 0.95rem; font-weight: 800; color: #0F172A; text-align: right; max-width: 65%; }
+        .receipt-row .value.mono { font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; background: #F8FAFC; padding: 2px 8px; border-radius: 6px; }
+        .receipt-row .value.status-success { color: #059669; background: #ECFDF5; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; text-transform: uppercase; }
 
-        .receipt-footer { margin-top: 35px; text-align: center; padding-top: 20px; border-top: 1px solid #F1F5F9; }
-        .receipt-footer p { font-size: 0.65rem; color: #94A3B8; font-weight: 600; line-height: 1.5; }
+        .receipt-footer { 
+          margin-top: 40px; 
+          display: flex; align-items: center; justify-content: center; gap: 10px;
+          padding: 18px; background: #F8FAFC; border-radius: 20px;
+          font-size: 0.75rem; font-weight: 700; color: #64748B;
+          border: 1px dashed #E2E8F0;
+        }
 
-        .receipt-actions { display: flex; gap: 12px; margin-top: 20px; }
-        .receipt-action-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .receipt-actions { display: flex; gap: 12px; margin-top: 24px; width: 100%; }
+        .receipt-action-btn { 
+          flex: 1; 
+          background: rgba(255,255,255,0.06); 
+          border: 1px solid rgba(255,255,255,0.1); 
+          color: #fff; padding: 15px; border-radius: 18px; 
+          font-size: 0.85rem; font-weight: 700; 
+          display: flex; align-items: center; justify-content: center; gap: 10px;
+          transition: all 0.2s;
+        }
+        .receipt-action-btn:hover { background: rgba(255,255,255,0.1); }
+        .receipt-action-btn:active { transform: scale(0.96); }
       `}} />
     </div>
   );
