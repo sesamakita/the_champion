@@ -1748,3 +1748,169 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
   color: var(--text-muted);
   line-height: 1.4;
 }
+
+/* ===== PHASE 1: READING SESSION & RESUME CARD ===== */
+
+/* Resume Card (BookDetail) */
+.resume-card {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-color: rgba(0, 200, 150, 0.25);
+  background: linear-gradient(135deg, #fff 0%, rgba(0,200,150,0.06) 100%);
+}
+.resume-card:active { transform: scale(0.97); }
+.resume-card-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.resume-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00C896, #10B981);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0,200,150,0.3);
+  flex-shrink: 0;
+}
+.resume-card-right { text-align: right; }
+.resume-percent {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--primary);
+  font-family: var(--font-main);
+}
+
+/* Detail Mini Stats */
+.detail-mini-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  background: rgba(0,0,0,0.025);
+  border-radius: 10px;
+}
+.detail-mini-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+}
+.detail-mini-lbl {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Dashboard Continue Reading Card */
+.continue-reading-card {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  border-color: var(--border-glow);
+}
+.continue-reading-card:active { transform: scale(0.97); }
+.continue-book-cover {
+  width: 44px;
+  height: 62px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--bg-input);
+}
+.continue-book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.continue-info {
+  flex: 1;
+  min-width: 0;
+}
+.continue-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.continue-meta {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+.continue-progress-wrap {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.continue-progress-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-input);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.continue-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+.continue-progress-text {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--primary);
+  min-width: 28px;
+  text-align: right;
+}
+.continue-play {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), #E8961E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+/* Book Premium Lock Overlay */
+.book-premium-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, var(--primary), #E8961E);
+  color: #0D0D2B;
+  font-size: 0.5rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+.book-lock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  backdrop-filter: blur(1px);
+}

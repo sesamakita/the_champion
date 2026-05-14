@@ -1,7 +1,29 @@
+import { useState, useEffect } from 'react';
 import { MOCK_BOOKS, formatEC } from '../data/mockData';
-import { ArrowLeft, BookOpen, Clock, Star, Trophy } from 'lucide-react';
+import { ArrowLeft, BookOpen, Clock, Star, Trophy, Play, CheckCircle } from 'lucide-react';
+import { getBookProgress } from '../hooks/useReadingSession';
 
 const BookDetail = ({ book, navigateTo }) => {
+  const [progress, setProgress] = useState(null);
+
+  useEffect(() => {
+    const saved = getBookProgress(book.id);
+    if (saved) setProgress(saved);
+  }, [book.id]);
+
+  const hasProgress = progress && progress.lastPage > 1;
+  const readPercent = progress?.progressPercent || book.progress || 0;
+  const validPages = progress?.validPages?.length || 0;
+
+  const formatTime = (seconds) => {
+    if (!seconds) return '00:00';
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    const pad = (n) => String(n).padStart(2, '0');
+    if (hrs > 0) return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+    return `${pad(mins)}:${pad(secs)}`;
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -36,6 +58,65 @@ const BookDetail = ({ book, navigateTo }) => {
           </div>
         </div>
 
+        {/* === RESUME READING CARD (jika ada progress) === */}
+        {hasProgress && (
+          <div className="glass-card glass-card-glow fade-in resume-card" onClick={() => navigateTo('book-reader', { bookId: book.id })}>
+            <div className="resume-card-left">
+              <div className="resume-icon-wrap">
+                <Play size={18} color="#fff" />
+              </div>
+              <div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 800 }}>Lanjut Membaca</div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: 2 }}>
+                  Halaman {progress.lastPage} dari {book.pages} • {formatTime(progress.totalTime)} dibaca
+                </div>
+              </div>
+            </div>
+            <div className="resume-card-right">
+              <div className="resume-percent">{readPercent}%</div>
+            </div>
+          </div>
+        )}
+
+        {/* Reading Stats (jika ada data sesi) */}
+        {hasProgress && (
+          <div className="glass-card fade-in" style={{ padding: 'var(--space-md)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>📊 Statistik Membaca</span>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <div className="detail-mini-stat">
+                <Clock size={14} color="var(--primary)" />
+                <div className="detail-mini-val">{formatTime(progress.totalTime)}</div>
+                <div className="detail-mini-lbl">Waktu</div>
+              </div>
+              <div className="detail-mini-stat">
+                <CheckCircle size={14} color="#00C896" />
+                <div className="detail-mini-val">{validPages}</div>
+                <div className="detail-mini-lbl">Hlm Valid</div>
+              </div>
+              <div className="detail-mini-stat">
+                <BookOpen size={14} color="var(--secondary)" />
+                <div className="detail-mini-val">{readPercent}%</div>
+                <div className="detail-mini-lbl">Progres</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Progress Bar */}
+        {readPercent > 0 && (
+          <div className="glass-card fade-in" style={{ padding: 'var(--space-md)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Progres Membaca</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 700 }}>{readPercent}%</span>
+            </div>
+            <div className="challenge-progress">
+              <div className="challenge-progress-fill" style={{ width: `${readPercent}%` }}></div>
+            </div>
+          </div>
+        )}
+
         {/* Reward Info */}
         <div className="glass-card glass-card-glow fade-in ec-reward-info-card">
           <div className="ec-reward-info-left">
@@ -55,19 +136,6 @@ const BookDetail = ({ book, navigateTo }) => {
           </div>
         </div>
 
-        {/* Progress */}
-        {book.progress > 0 && (
-          <div className="glass-card fade-in" style={{ padding: 'var(--space-md)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Progres Membaca</span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 700 }}>{book.progress}%</span>
-            </div>
-            <div className="challenge-progress">
-              <div className="challenge-progress-fill" style={{ width: `${book.progress}%` }}></div>
-            </div>
-          </div>
-        )}
-
         {/* Synopsis */}
         <div className="glass-card fade-in" style={{ padding: 'var(--space-md)' }}>
           <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 8 }}>📝 Sinopsis</h3>
@@ -83,7 +151,7 @@ const BookDetail = ({ book, navigateTo }) => {
           onClick={() => navigateTo('book-reader', { bookId: book.id })}
         >
           <BookOpen size={16} style={{ verticalAlign: 'middle', marginRight: 8 }} />
-          {book.progress > 0 ? 'Lanjut Membaca' : 'Mulai Membaca'}
+          {hasProgress ? 'Lanjut Membaca' : 'Mulai Membaca'}
         </button>
       </div>
     </div>

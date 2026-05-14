@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, Settings, Maximize2, Bookmark, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Settings, Maximize2, Bookmark, Loader2, Clock, Shield, CheckCircle, AlertTriangle } from 'lucide-react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import useReadingSession from '../hooks/useReadingSession';
 
 // Setup worker untuk react-pdf menggunakan UNPKG yang lebih andal untuk versi spesifik
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -14,9 +15,21 @@ const BookReader = ({ book, navigateTo, localFile }) => {
   const [theme, setTheme] = useState('light');
   const [isLoading, setIsLoading] = useState(true);
   const [scale, setScale] = useState(1.0);
+  const [showSessionStats, setShowSessionStats] = useState(false);
 
   // Gunakan file lokal jika ada, jika tidak gunakan placeholder
   const pdfSource = localFile || book.pdfUrl || null;
+  const isLocalFile = !!localFile;
+
+  // === READING SESSION HOOK ===
+  const session = useReadingSession(book.id, numPages);
+
+  // Load saved page on mount
+  useEffect(() => {
+    if (session.savedPage > 1 && numPages) {
+      setCurrentPage(session.savedPage);
+    }
+  }, [numPages]);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -24,6 +37,14 @@ const BookReader = ({ book, navigateTo, localFile }) => {
   }
 
   const toggleControls = () => setShowControls(!showControls);
+
+  // Page change with session tracking
+  const goToPage = (newPage) => {
+    if (newPage < 1 || (numPages && newPage > numPages)) return;
+    const oldPage = currentPage;
+    setCurrentPage(newPage);
+    session.handlePageChange(newPage, oldPage);
+  };
 
   const getThemeStyles = () => {
     switch(theme) {
@@ -34,12 +55,25 @@ const BookReader = ({ book, navigateTo, localFile }) => {
   };
 
   const styles = getThemeStyles();
+  const stats = session.getSessionStats();
 
   return (
     <div className="reader-container" style={{ backgroundColor: styles.bg }}>
+      {/* === FAST FLIP WARNING TOAST === */}
+      <div className={`reader-toast warning ${session.showFastFlipWarning ? 'show' : ''}`}>
+        <AlertTriangle size={16} />
+        <span>Terlalu cepat! Baca perlahan agar halaman tervalidasi 📖</span>
+      </div>
+
+      {/* === PAGE VALIDATED TOAST === */}
+      <div className={`reader-toast success ${session.showPageValidated ? 'show' : ''}`}>
+        <CheckCircle size={16} />
+        <span>Halaman tervalidasi ✓</span>
+      </div>
+
       {/* Top Bar */}
       <div className={`reader-header ${showControls ? 'visible' : 'hidden'}`}>
-        <button className="reader-back" onClick={() => navigateTo('library')}>
+        <button className="reader-back" onClick={() => { session.saveProgress(currentPage); navigateTo('library'); }}>
           <ArrowLeft size={20} />
         </button>
         <div className="reader-title-info">
@@ -48,7 +82,30 @@ const BookReader = ({ book, navigateTo, localFile }) => {
             {numPages ? `Halaman ${currentPage} dari ${numPages}` : 'Memuat dokumen...'}
           </span>
         </div>
-        <button className="reader-action-btn"><Bookmark size={20} /></button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {/* Reading Timer Badge */}
+          <div className="reader-timer-badge" onClick={(e) => { e.stopPropagation(); setShowSessionStats(!showSessionStats); }}>
+            <Clock size={12} />
+            <span>{session.formatTime(session.totalReadingTime)}</span>
+          </div>
+          <button className="reader-action-btn"><Bookmark size={20} /></button>
+        </div>
+      </div>
+
+      {/* === PAGE VALIDATION INDICATOR (mini ring) === */}
+      <div className="reader-page-ring">
+        <svg width="28" height="28" viewBox="0 0 28 28">
+          <circle cx="14" cy="14" r="12" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2.5" />
+          <circle cx="14" cy="14" r="12" fill="none"
+            stroke={stats.isPageValid ? '#00C896' : 'var(--primary)'}
+            strokeWidth="2.5"
+            strokeDasharray={`${2 * Math.PI * 12}`}
+            strokeDashoffset={`${2 * Math.PI * 12 * (1 - stats.pageTimerProgress)}`}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 0.5s ease, stroke 0.3s ease', transform: 'rotate(-90deg)', transformOrigin: 'center' }}
+          />
+        </svg>
+        {stats.isPageValid && <CheckCircle size={12} className="ring-check" />}
       </div>
 
       {/* Progress Bar */}
@@ -57,6 +114,39 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           className="reader-progress-fill" 
           style={{ width: `${numPages ? (currentPage / numPages) * 100 : 0}%` }}
         ></div>
+      </div>
+
+      {/* === SESSION STATS PANEL === */}
+      <div className={`reader-session-panel ${showSessionStats ? 'show' : ''}`} onClick={(e) => e.stopPropagation()}>
+        <div className="session-panel-header">
+          <Shield size={16} color="var(--primary)" />
+          <span>Sesi Membaca</span>
+          <button className="session-close" onClick={() => setShowSessionStats(false)}>✕</button>
+        </div>
+        <div className="session-stats-grid">
+          <div className="session-stat">
+            <div className="session-stat-value">{session.formatTime(session.totalReadingTime)}</div>
+            <div className="session-stat-label">Waktu Baca</div>
+          </div>
+          <div className="session-stat">
+            <div className="session-stat-value">{stats.totalValidPages}/{stats.totalPages}</div>
+            <div className="session-stat-label">Hlm Valid</div>
+          </div>
+          <div className="session-stat">
+            <div className="session-stat-value">{stats.validPercent}%</div>
+            <div className="session-stat-label">Validasi</div>
+          </div>
+          <div className="session-stat">
+            <div className="session-stat-value">{stats.progressPercent}%</div>
+            <div className="session-stat-label">Progres</div>
+          </div>
+        </div>
+        {!isLocalFile && (
+          <div className="session-reward-preview">
+            <span>🪙</span>
+            <span>{stats.canClaimReward ? `+${book.rewardEC} EC siap diklaim!` : `Baca ${Math.ceil(stats.totalPages * 0.7) - stats.totalValidPages} hlm lagi untuk reward`}</span>
+          </div>
+        )}
       </div>
 
       {/* PDF Content Area */}
@@ -118,7 +208,7 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           <button 
             className="reader-nav-btn" 
             disabled={currentPage <= 1}
-            onClick={(e) => { e.stopPropagation(); setCurrentPage(prev => prev - 1); }}
+            onClick={(e) => { e.stopPropagation(); goToPage(currentPage - 1); }}
           >
             <ChevronLeft size={24} />
           </button>
@@ -129,7 +219,7 @@ const BookReader = ({ book, navigateTo, localFile }) => {
               min="1" 
               max={numPages || 1} 
               value={currentPage}
-              onChange={(e) => setCurrentPage(parseInt(e.target.value))}
+              onChange={(e) => goToPage(parseInt(e.target.value))}
               onClick={(e) => e.stopPropagation()}
               className="reader-slider"
             />
@@ -138,7 +228,7 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           <button 
             className="reader-nav-btn" 
             disabled={currentPage >= numPages}
-            onClick={(e) => { e.stopPropagation(); setCurrentPage(prev => prev + 1); }}
+            onClick={(e) => { e.stopPropagation(); goToPage(currentPage + 1); }}
           >
             <ChevronRight size={24} />
           </button>
@@ -183,7 +273,7 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           
           <div className="reward-badge-reader">
             <span className="reward-icon">🪙</span>
-            <span>+40 EC</span>
+            <span>+{book.rewardEC || 0} EC</span>
           </div>
         </div>
       </div>
@@ -230,6 +320,158 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           cursor: pointer;
         }
         .zoom-level:hover { background: rgba(0,0,0,0.1); }
+
+        /* === READING TIMER BADGE === */
+        .reader-timer-badge {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          background: rgba(0,0,0,0.06);
+          padding: 5px 10px;
+          border-radius: 20px;
+          font-size: 0.7rem;
+          font-weight: 800;
+          color: var(--text-secondary);
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-family: 'Courier New', monospace;
+          min-width: 68px;
+          justify-content: center;
+        }
+        .reader-timer-badge:hover {
+          background: rgba(0,0,0,0.1);
+          color: var(--primary);
+        }
+
+        /* === PAGE VALIDATION RING === */
+        .reader-page-ring {
+          position: fixed;
+          top: 62px;
+          right: 14px;
+          z-index: 100;
+          opacity: 0.85;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .ring-check {
+          position: absolute;
+          color: #00C896;
+          animation: ringPop 0.3s ease;
+        }
+        @keyframes ringPop {
+          0% { transform: scale(0); opacity: 0; }
+          60% { transform: scale(1.3); }
+          100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* === TOAST NOTIFICATIONS === */
+        .reader-toast {
+          position: fixed;
+          top: -60px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 18px;
+          border-radius: 12px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          font-family: var(--font-main);
+          backdrop-filter: blur(12px);
+          transition: top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          white-space: nowrap;
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .reader-toast.show { top: 16px; }
+        .reader-toast.warning {
+          background: rgba(245,166,35,0.92);
+          color: #fff;
+        }
+        .reader-toast.success {
+          background: rgba(0,200,150,0.92);
+          color: #fff;
+        }
+
+        /* === SESSION STATS PANEL === */
+        .reader-session-panel {
+          position: fixed;
+          top: 56px;
+          right: 12px;
+          z-index: 200;
+          background: var(--bg-card);
+          border: 1px solid var(--border-glow);
+          border-radius: 16px;
+          padding: 16px;
+          width: 240px;
+          box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+          opacity: 0;
+          transform: translateY(-10px) scale(0.95);
+          pointer-events: none;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          font-family: var(--font-main);
+        }
+        .reader-session-panel.show {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          pointer-events: all;
+        }
+        .session-panel-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.8rem;
+          font-weight: 800;
+          color: var(--text-primary);
+          margin-bottom: 14px;
+        }
+        .session-close {
+          margin-left: auto;
+          background: none;
+          border: none;
+          color: var(--text-muted);
+          cursor: pointer;
+          font-size: 0.9rem;
+          padding: 2px 6px;
+          border-radius: 6px;
+        }
+        .session-close:hover { background: rgba(0,0,0,0.06); }
+        .session-stats-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+        .session-stat {
+          text-align: center;
+          background: rgba(0,0,0,0.03);
+          border-radius: 10px;
+          padding: 10px 6px;
+        }
+        .session-stat-value {
+          font-size: 1rem;
+          font-weight: 800;
+          color: var(--text-primary);
+        }
+        .session-stat-label {
+          font-size: 0.6rem;
+          color: var(--text-muted);
+          font-weight: 600;
+          margin-top: 2px;
+        }
+        .session-reward-preview {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 12px;
+          padding: 8px 12px;
+          border-radius: 10px;
+          background: linear-gradient(135deg, rgba(245,166,35,0.1), rgba(0,200,150,0.1));
+          font-size: 0.7rem;
+          font-weight: 700;
+          color: var(--text-secondary);
+        }
       `}} />
     </div>
   );

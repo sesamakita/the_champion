@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { MOCK_USER, MOCK_BOOKS, EC_CONFIG, formatEC } from '../data/mockData';
-import { BookOpen, Flame, Target, TrendingUp, ChevronRight, Wallet } from 'lucide-react';
+import { BookOpen, Flame, Target, TrendingUp, ChevronRight, Wallet, Play, Clock } from 'lucide-react';
+import { getAllReadingProgress } from '../hooks/useReadingSession';
 
 const Dashboard = ({ navigateTo }) => {
   const user = MOCK_USER;
@@ -7,6 +9,32 @@ const Dashboard = ({ navigateTo }) => {
   const reading = MOCK_BOOKS.filter(b => b.progress > 0 && b.progress < 100);
   const completed = MOCK_BOOKS.filter(b => b.progress === 100).length;
   const days = ['S','S','R','K','J','S','M'];
+
+  // === PERSISTED READING PROGRESS ===
+  const [continueBooks, setContinueBooks] = useState([]);
+
+  useEffect(() => {
+    const allProgress = getAllReadingProgress();
+    const booksWithProgress = Object.entries(allProgress)
+      .map(([bookId, data]) => {
+        const book = MOCK_BOOKS.find(b => b.id === parseInt(bookId));
+        if (!book || !data || data.lastPage <= 1) return null;
+        return { ...book, savedProgress: data };
+      })
+      .filter(Boolean)
+      .sort((a, b) => new Date(b.savedProgress.lastReadAt) - new Date(a.savedProgress.lastReadAt));
+    setContinueBooks(booksWithProgress);
+  }, []);
+
+  const formatTime = (seconds) => {
+    if (!seconds) return '00:00';
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    const pad = (n) => String(n).padStart(2, '0');
+    if (hrs > 0) return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+    return `${pad(mins)}:${pad(secs)}`;
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -108,8 +136,45 @@ const Dashboard = ({ navigateTo }) => {
           </div>
         </div>
 
-        {/* Currently Reading */}
-        {reading.length > 0 && (
+        {/* Continue Reading (from persisted progress) */}
+        {continueBooks.length > 0 && (
+          <div className="fade-in">
+            <div className="section-header">
+              <div className="section-title">📖 Lanjutkan Membaca</div>
+              <div className="section-link" onClick={() => navigateTo('library')}>Semua <ChevronRight size={14} style={{verticalAlign:'middle'}} /></div>
+            </div>
+            {continueBooks.slice(0, 2).map(book => (
+              <div key={book.id} className="glass-card continue-reading-card fade-in" onClick={() => navigateTo('book-detail', { bookId: book.id })}>
+                <div className="continue-book-cover" style={{ background: (book.cover.startsWith('http') || book.cover.startsWith('/')) ? 'none' : `linear-gradient(135deg, ${book.color}22, ${book.color}44)` }}>
+                  {(book.cover.startsWith('http') || book.cover.startsWith('/')) ? (
+                    <img src={book.cover} alt={book.title} />
+                  ) : (
+                    <span>{book.cover}</span>
+                  )}
+                </div>
+                <div className="continue-info">
+                  <div className="continue-title">{book.title}</div>
+                  <div className="continue-meta">
+                    <Clock size={10} style={{ verticalAlign: 'middle', marginRight: 3 }} />
+                    {formatTime(book.savedProgress.totalTime)} • Hlm {book.savedProgress.lastPage}
+                  </div>
+                  <div className="continue-progress-wrap">
+                    <div className="continue-progress-bar">
+                      <div className="continue-progress-fill" style={{ width: `${book.savedProgress.progressPercent}%` }}></div>
+                    </div>
+                    <span className="continue-progress-text">{book.savedProgress.progressPercent}%</span>
+                  </div>
+                </div>
+                <div className="continue-play">
+                  <Play size={14} color="#0D0D2B" fill="#0D0D2B" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Currently Reading (from mock data) */}
+        {reading.length > 0 && continueBooks.length === 0 && (
           <div className="fade-in">
             <div className="section-header">
               <div className="section-title">📖 Sedang Dibaca</div>
@@ -117,7 +182,7 @@ const Dashboard = ({ navigateTo }) => {
             </div>
             <div className="books-scroll hide-scrollbar">
               {reading.map(book => (
-                <div key={book.id} className="book-card" onClick={() => navigateTo('book-detail')}>
+                <div key={book.id} className="book-card" onClick={() => navigateTo('book-detail', { bookId: book.id })}>
                   <div className="book-cover" style={{ background: `linear-gradient(135deg, ${book.color}22, ${book.color}44)` }}>
                     <span>{book.cover}</span>
                     {book.progress > 50 && <span className="book-cover-badge">🔥 {book.progress}%</span>}
