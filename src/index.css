@@ -1914,3 +1914,32 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
   font-size: 2rem;
   backdrop-filter: blur(1px);
 }
+
+.package-message {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  animation: slideUp 0.3s ease;
+}
+
+.package-message.success {
+  background: rgba(0, 200, 150, 0.1);
+  color: #00C896;
+  border: 1px solid rgba(0, 200, 150, 0.2);
+}
+
+.package-message.error {
+  background: rgba(231, 76, 60, 0.1);
+  color: #E74C3C;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

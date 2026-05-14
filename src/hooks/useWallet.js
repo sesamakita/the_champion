@@ -37,11 +37,35 @@ export function useWallet() {
         return result;
     }, []);
 
+    const topUp = useCallback((amount, method) => {
+        const result = WalletService.topUp(amount, method);
+        setWallet({ ...result.wallet });
+        setTransactions([...WalletService.getTransactions()]);
+        return result;
+    }, []);
+
+    const buyPackage = useCallback((packageId) => {
+        const result = WalletService.buyPackage(packageId);
+        setWallet({ ...result.wallet });
+        setTransactions([...WalletService.getTransactions()]);
+        return result;
+    }, []);
+
+    const withdraw = useCallback((amount, bankInfo) => {
+        const result = WalletService.withdraw(amount, bankInfo);
+        setWallet({ ...result.wallet });
+        setTransactions([...WalletService.getTransactions()]);
+        return result;
+    }, []);
+
     return {
         wallet,
         transactions,
         addTransaction,
         earnReadingReward,
+        topUp,
+        buyPackage,
+        withdraw,
         refresh: () => {
             setWallet(WalletService.getWallet());
             setTransactions(WalletService.getTransactions());

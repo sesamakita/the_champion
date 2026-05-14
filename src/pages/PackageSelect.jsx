@@ -1,10 +1,25 @@
 import { useState } from 'react';
 import { PACKAGES, formatEC } from '../data/mockData';
-import { ArrowLeft, CheckCircle2, TrendingUp, Target, Zap } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, TrendingUp, Target, Zap, AlertCircle } from 'lucide-react';
+import { useWallet } from '../hooks/useWallet';
 
 const PackageSelect = ({ navigateTo }) => {
-  const [activeTab, setActiveTab] = useState('reader'); // Default ke Reader karena paling populer
+  const [activeTab, setActiveTab] = useState('reader'); 
+  const { wallet, buyPackage } = useWallet();
+  const [message, setMessage] = useState(null);
+  
   const pkg = PACKAGES.find(p => p.id === activeTab);
+
+  const handleBuy = () => {
+    const result = buyPackage(pkg.id);
+    if (result.success) {
+      setMessage({ type: 'success', text: result.message });
+      setTimeout(() => navigateTo('dashboard'), 2000);
+    } else {
+      setMessage({ type: 'error', text: result.message });
+      setTimeout(() => setMessage(null), 3000);
+    }
+  };
 
   return (
     <div className="page-container package-page">
@@ -103,11 +118,20 @@ const PackageSelect = ({ navigateTo }) => {
               </div>
             </div>
 
+            {/* Message Toast */}
+            {message && (
+              <div className={`package-message ${message.type} fade-in`}>
+                {message.type === 'error' ? <AlertCircle size={16} /> : <CheckCircle2 size={16} />}
+                <span>{message.text}</span>
+              </div>
+            )}
+
             {/* CTA Button */}
             <button 
               className="up-buy-btn"
               style={{ background: pkg.color, boxShadow: `0 8px 24px ${pkg.color}44` }}
-              onClick={() => alert(`Memproses pembelian paket ${pkg.name}`)}
+              onClick={handleBuy}
+              disabled={message?.type === 'success'}
             >
               Beli Paket {pkg.name} Sekarang
             </button>

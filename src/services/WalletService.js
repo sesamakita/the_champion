@@ -89,6 +89,66 @@ const WalletService = {
     },
 
     /**
+     * Top Up EC
+     */
+    topUp(amount, method = 'MOCK_PAYMENT') {
+        return this.addTransaction({
+            type: 'TOPUP',
+            label: `Top Up EC via ${method}`,
+            amount: amount
+        });
+    },
+
+    /**
+     * Buy a membership package
+     */
+    buyPackage(packageId) {
+        const pkg = PACKAGES.find(p => p.id === packageId);
+        if (!pkg) return { success: false, message: 'Paket tidak ditemukan' };
+
+        const wallet = this.getWallet();
+        if (wallet.totalBalance < pkg.priceEC) {
+            return { success: false, message: 'Saldo EC tidak cukup' };
+        }
+
+        // Deduct balance
+        this.addTransaction({
+            type: 'SPEND_BOOK', // Using book spend for now, could add SPEND_PACKAGE
+            label: `Beli Paket: ${pkg.name}`,
+            amount: -pkg.priceEC
+        });
+
+        // Update user's package
+        const user = this.getUser();
+        user.package = pkg.id;
+        StorageService.save(STORAGE_KEYS.CURRENT_USER, user);
+
+        window.dispatchEvent(new Event('storage'));
+        return { success: true, message: `Berhasil membeli paket ${pkg.name}` };
+    },
+
+    /**
+     * Withdraw EC to Bank/E-Wallet
+     */
+    withdraw(amount, bankInfo) {
+        const wallet = this.getWallet();
+        if (wallet.earnedBalance < amount) {
+            return { success: false, message: 'Saldo Earned tidak cukup' };
+        }
+        if (amount < EC_CONFIG.minWithdrawal) {
+            return { success: false, message: `Minimal penarikan ${EC_CONFIG.minWithdrawal} EC` };
+        }
+
+        this.addTransaction({
+            type: 'WITHDRAW',
+            label: `Tarik Saldo ke ${bankInfo.method}`,
+            amount: -amount
+        });
+
+        return { success: true, message: 'Permintaan penarikan berhasil diajukan' };
+    },
+
+    /**
      * Specifically handle reading reward
      */
     rewardReading(book) {
