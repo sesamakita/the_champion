@@ -303,65 +303,82 @@ const TopUp = ({ navigateTo }) => {
   }
 
   return (
-    <div className="page-container topup-page">
-      <div className="page-header sticky-header">
+    <div className="page-container topup-viewport">
+      {/* Background Glows */}
+      <div className="bg-glow-orb orb-1"></div>
+      <div className="bg-glow-orb orb-2"></div>
+
+      <div className="page-header premium-header">
         <div className="header-left" onClick={() => navigateTo('reward')} style={{ cursor: 'pointer' }}>
-          <ArrowLeft size={20} />
-          <div className="header-name">Top Up Saldo</div>
+          <div className="back-btn-glass"><ArrowLeft size={20} /></div>
+          <div className="header-text-wrap">
+            <div className="header-title-premium">Isi Saldo Wallet</div>
+            <div className="header-sub-premium">Pilih paket Edu Coin terbaik</div>
+          </div>
         </div>
       </div>
 
       <div className="main-scroll hide-scrollbar">
-        <div className="topup-hero">
-          <div className="hero-label">Total Saldo EC Saat Ini</div>
-          <div className="hero-balance">🪙 1,250 <small>EC</small></div>
+        {/* Balance Hero Card */}
+        <div className="premium-hero-container">
+          <div className="balance-glass-card">
+            <div className="hero-coin-icon">🪙</div>
+            <div className="hero-info">
+              <span className="hero-label">Saldo Aktif Anda</span>
+              <div className="hero-val">1,250 <small>EC</small></div>
+            </div>
+            <div className="hero-glow-effect"></div>
+          </div>
         </div>
 
-        <div className="section-padding">
-          <div className="section-header-row">
-            <span className="section-title">Pilih Nominal Top Up</span>
-            <span className="section-sub">Dapatkan harga lebih hemat</span>
+        <div className="section-padding-premium">
+          <div className="section-header-premium">
+            <Sparkles size={16} color="var(--primary)" />
+            <span>Pilih Nominal Top Up</span>
           </div>
           
-          <div className="nominal-grid">
-            {TOP_UP_OPTIONS.map(opt => (
+          <div className="premium-nominal-grid">
+            {TOP_UP_OPTIONS.map((opt, idx) => (
               <div 
                 key={opt.id} 
-                className={`nominal-card ${selectedOption.id === opt.id ? 'active' : ''}`}
+                className={`glass-nominal-card ${selectedOption.id === opt.id ? 'active' : ''}`}
+                style={{ animationDelay: `${idx * 0.1}s` }}
                 onClick={() => setSelectedOption(opt)}
               >
-                {opt.bonus && <div className="nominal-bonus">{opt.bonus}</div>}
-                <div className="nominal-ec">{opt.ec} <small>EC</small></div>
-                <div className="nominal-price">{formatCurrency(opt.price)}</div>
+                {opt.bonus && <div className="nominal-badge-glow">{opt.bonus}</div>}
+                <div className="nominal-icon-wrap">🪙</div>
+                <div className="nominal-ec-val">{opt.ec} <small>EC</small></div>
+                <div className="nominal-price-tag">{formatCurrency(opt.price)}</div>
+                {selectedOption.id === opt.id && <div className="card-active-glow"></div>}
               </div>
             ))}
           </div>
 
-          <div className="section-header-row mt-30">
-            <span className="section-title">Metode Pembayaran</span>
-            <span className="section-sub">Terverifikasi & Aman</span>
+          <div className="section-header-premium mt-40">
+            <CreditCard size={16} color="var(--primary)" />
+            <span>Metode Pembayaran</span>
           </div>
 
-          <div className="payment-groups-container">
-            {PAYMENT_GROUPS.map((group, idx) => (
-              <div key={idx} className="payment-group-item">
-                <div className="group-label">{group.title}</div>
-                <div className="methods-wrapper">
+          <div className="premium-payment-list">
+            {PAYMENT_GROUPS.map((group, gIdx) => (
+              <div key={gIdx} className="payment-group-glass">
+                <div className="group-label-premium">{group.title}</div>
+                <div className="methods-glass-container">
                   {group.methods.map(method => (
                     <div 
                       key={method.id} 
-                      className={`method-tile ${selectedMethod.id === method.id ? 'active' : ''}`}
+                      className={`method-glass-tile ${selectedMethod.id === method.id ? 'active' : ''}`}
                       onClick={() => setSelectedMethod(method)}
                     >
-                      <div className="method-icon-bg" style={{ color: method.color }}>
+                      <div className="method-icon-circle" style={{ background: `${method.color}20`, color: method.color }}>
                         {method.icon}
                       </div>
-                      <div className="method-info">
-                        <div className="method-name">{method.name}</div>
-                        <div className="method-desc">Proses Instan</div>
+                      <div className="method-text">
+                        <div className="m-name-premium">{method.name}</div>
+                        <div className="m-status-premium">Tersedia • Instan</div>
                       </div>
-                      <div className="method-radio">
-                        <div className="radio-dot"></div>
+                      <div className={`m-radio-premium ${selectedMethod.id === method.id ? 'checked' : ''}`}>
+                        <div className="m-radio-inner"></div>
                       </div>
                     </div>
                   ))}
@@ -370,71 +387,142 @@ const TopUp = ({ navigateTo }) => {
             ))}
           </div>
         </div>
-        <div style={{ height: '120px' }}></div>
+        <div style={{ height: '140px' }}></div>
       </div>
 
-      <div className="checkout-sticky">
-        <div className="checkout-content">
-          <div className="checkout-price-wrap">
-            <span className="price-label">Total Pembayaran</span>
-            <span className="price-value">{formatCurrency(selectedOption.price)}</span>
+      <div className="premium-checkout-bar">
+        <div className="checkout-glass-inner">
+          <div className="checkout-summary">
+            <span className="c-label">Total Tagihan</span>
+            <span className="c-val">{formatCurrency(selectedOption.price)}</span>
           </div>
-          <button className="checkout-button-primary" onClick={handleProcess}>
-            Konfirmasi & Bayar
+          <button className="confirm-btn-premium" onClick={handleProcess}>
+            <span>Konfirmasi & Bayar</span>
+            <ChevronRight size={20} />
           </button>
         </div>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .topup-page { background: #0F172A; }
-        .sticky-header { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); z-index: 1000; position: sticky; top: 0; }
-        .topup-hero { padding: 30px 24px; background: linear-gradient(135deg, rgba(245,166,35,0.1), transparent); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .hero-label { font-size: 0.75rem; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        .hero-balance { font-size: 2rem; font-weight: 800; color: #fff; }
-        .hero-balance small { font-size: 1rem; color: var(--primary); }
+        .topup-viewport { background: #0F172A; position: relative; overflow: hidden; }
+        .bg-glow-orb { position: absolute; border-radius: 50%; filter: blur(100px); z-index: 0; opacity: 0.15; }
+        .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -50px; right: -50px; }
+        .orb-2 { width: 250px; height: 250px; background: #10B981; bottom: 50px; left: -50px; }
 
-        .section-header-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
-        .section-title { font-size: 1rem; font-weight: 800; color: #fff; }
-        .section-sub { font-size: 0.75rem; color: #94A3B8; }
+        .premium-header { padding: 20px; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(10px); z-index: 100; }
+        .back-btn-glass { width: 44px; height: 44px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; }
+        .header-title-premium { font-size: 1.1rem; font-weight: 800; color: #fff; }
+        .header-sub-premium { font-size: 0.75rem; color: #94A3B8; margin-top: 2px; }
 
-        .nominal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .nominal-card { 
-          background: rgba(255,255,255,0.03); 
-          border: 1px solid rgba(255,255,255,0.05); 
-          border-radius: 20px; 
-          padding: 24px 16px; 
-          position: relative; 
-          transition: all 0.3s; 
+        .premium-hero-container { padding: 20px; z-index: 1; }
+        .balance-glass-card { 
+          background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 30px;
+          padding: 25px;
           display: flex;
-          flex-direction: column;
           align-items: center;
+          gap: 20px;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-        .nominal-card.active { background: rgba(245,166,35,0.08); border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(245,166,35,0.15); }
-        .nominal-bonus { position: absolute; top: 0; right: 0; background: var(--primary); color: #000; font-size: 0.6rem; font-weight: 900; padding: 4px 12px; border-bottom-left-radius: 12px; }
-        .nominal-ec { font-size: 1.5rem; font-weight: 900; color: #fff; }
-        .nominal-ec small { font-size: 0.8rem; color: var(--primary); }
-        .nominal-price { font-size: 0.85rem; color: #94A3B8; margin-top: 4px; font-weight: 600; }
+        .hero-coin-icon { font-size: 2.5rem; filter: drop-shadow(0 0 10px rgba(245,166,35,0.4)); }
+        .hero-label { font-size: 0.75rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-val { font-size: 1.8rem; font-weight: 900; color: #fff; }
+        .hero-val small { font-size: 0.9rem; color: var(--primary); margin-left: 4px; }
+        .hero-glow-effect { position: absolute; top: -50%; right: -20%; width: 100px; height: 200px; background: var(--primary); filter: blur(60px); opacity: 0.2; transform: rotate(45deg); }
 
-        .payment-group-item { margin-bottom: 24px; }
-        .group-label { font-size: 0.7rem; font-weight: 700; color: #64748B; text-transform: uppercase; margin-bottom: 12px; padding-left: 4px; }
-        .methods-wrapper { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 4px; border: 1px solid rgba(255,255,255,0.05); }
-        .method-tile { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 16px; transition: all 0.2s; cursor: pointer; }
-        .method-tile.active { background: rgba(255,255,255,0.04); }
-        .method-icon-bg { width: 44px; height: 44px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .method-info { flex: 1; }
-        .method-name { font-size: 0.9rem; font-weight: 700; color: #fff; }
-        .method-desc { font-size: 0.7rem; color: #64748B; margin-top: 2px; }
-        .method-radio { width: 22px; height: 22px; border: 2px solid #334155; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .method-tile.active .method-radio { border-color: var(--primary); }
-        .radio-dot { width: 10px; height: 10px; background: var(--primary); border-radius: 50%; transform: scale(0); transition: all 0.2s; }
-        .method-tile.active .radio-dot { transform: scale(1); }
+        .section-padding-premium { padding: 0 20px; }
+        .section-header-premium { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 18px; }
+        
+        .premium-nominal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .glass-nominal-card {
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 24px;
+          padding: 24px 16px;
+          text-align: center;
+          position: relative;
+          transition: all 0.3s cubic-bezier(0.17, 0.67, 0.37, 0.99);
+          animation: fadeSlideIn 0.5s ease-out both;
+          cursor: pointer;
+        }
+        @keyframes fadeSlideIn {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        .glass-nominal-card.active {
+          background: rgba(245,166,35,0.08);
+          border-color: var(--primary);
+          transform: translateY(-5px);
+          box-shadow: 0 15px 30px rgba(245,166,35,0.15);
+        }
+        .nominal-badge-glow {
+          position: absolute;
+          top: -10px; right: 10px;
+          background: var(--primary);
+          color: #000;
+          font-size: 0.6rem;
+          font-weight: 900;
+          padding: 4px 10px;
+          border-radius: 8px;
+          box-shadow: 0 4px 10px rgba(245,166,35,0.3);
+        }
+        .nominal-icon-wrap { font-size: 1.8rem; margin-bottom: 10px; }
+        .nominal-ec-val { font-size: 1.5rem; font-weight: 900; color: #fff; }
+        .nominal-ec-val small { font-size: 0.75rem; color: var(--primary); }
+        .nominal-price-tag { font-size: 0.8rem; font-weight: 600; color: #64748B; margin-top: 5px; }
+        .card-active-glow { position: absolute; inset: 0; border-radius: 24px; background: radial-gradient(circle at center, rgba(245,166,35,0.1), transparent 70%); z-index: -1; }
 
-        .checkout-sticky { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.05); padding: 16px 20px 34px; z-index: 2000; }
-        .checkout-content { display: flex; align-items: center; justify-content: space-between; max-width: 410px; margin: 0 auto; }
-        .checkout-price-wrap { display: flex; flex-direction: column; }
-        .price-label { font-size: 0.7rem; color: #94A3B8; font-weight: 600; }
-        .price-value { font-size: 1.25rem; font-weight: 900; color: #fff; }
-        .checkout-button-primary { background: var(--primary); color: #000; padding: 14px 28px; border-radius: 16px; font-weight: 900; border: none; font-size: 0.95rem; box-shadow: 0 8px 24px rgba(245,166,35,0.3); }
+        .payment-group-glass { margin-bottom: 30px; }
+        .group-label-premium { font-size: 0.7rem; font-weight: 800; color: #64748B; text-transform: uppercase; margin-bottom: 12px; padding-left: 5px; letter-spacing: 1px; }
+        .methods-glass-container { background: rgba(255,255,255,0.02); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .method-glass-tile { display: flex; align-items: center; gap: 15px; padding: 18px; transition: all 0.2s; cursor: pointer; }
+        .method-glass-tile.active { background: rgba(255,255,255,0.05); }
+        .method-icon-circle { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+        .method-text { flex: 1; }
+        .m-name-premium { font-size: 0.9rem; font-weight: 700; color: #fff; }
+        .m-status-premium { font-size: 0.7rem; color: #64748B; margin-top: 2px; }
+        .m-radio-premium { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .m-radio-premium.checked { border-color: var(--primary); }
+        .m-radio-inner { width: 10px; height: 10px; background: var(--primary); border-radius: 50%; transform: scale(0); transition: all 0.2s; }
+        .m-radio-premium.checked .m-radio-inner { transform: scale(1); }
+
+        .premium-checkout-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 20px 20px 40px; z-index: 1000; }
+        .checkout-glass-inner { 
+          background: rgba(30, 41, 59, 0.8);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 28px;
+          padding: 16px 18px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          box-shadow: 0 -20px 40px rgba(0,0,0,0.3);
+        }
+        .checkout-summary { display: flex; flex-direction: column; }
+        .c-label { font-size: 0.7rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; }
+        .c-val { font-size: 1.25rem; font-weight: 900; color: #fff; }
+        .confirm-btn-premium { 
+          background: linear-gradient(135deg, var(--primary) 0%, #D97706 100%);
+          color: #000;
+          padding: 14px 24px;
+          border-radius: 18px;
+          border: none;
+          font-weight: 900;
+          font-size: 0.95rem;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          box-shadow: 0 10px 20px rgba(245,166,35,0.3);
+          cursor: pointer;
+          transition: all 0.3s;
+        }
+        .confirm-btn-premium:active { transform: scale(0.96); }
+      `}} />
+    </div>
+  );
 
         /* Modern Loader */
         .modern-loader { position: relative; width: 80px; height: 80px; margin-bottom: 30px; }
