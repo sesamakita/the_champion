@@ -343,6 +343,25 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           color: var(--primary);
         }
 
+        .reader-action-btn {
+          background: none;
+          border: none;
+          color: var(--text-primary);
+          cursor: pointer;
+          padding: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          transition: background 0.2s;
+        }
+        .reader-action-btn:hover {
+          background: rgba(0,0,0,0.05);
+        }
+        .reader-action-btn:active {
+          background: rgba(0,0,0,0.1);
+        }
+
         /* === PAGE VALIDATION RING === */
         .reader-page-ring {
           position: fixed;
