@@ -1,30 +1,30 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, CheckCircle2, CreditCard, Smartphone, Landmark, QrCode, ChevronRight, ShieldCheck, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, CreditCard, Smartphone, Landmark, QrCode, ChevronRight, Sparkles, Loader2, Copy, Share2 } from 'lucide-react';
 import { formatCurrency, formatEC } from '../data/mockData';
 import { useWallet } from '../hooks/useWallet';
 
 const TOP_UP_OPTIONS = [
-  { id: 1, ec: 100, price: 10000, badge: null },
-  { id: 2, ec: 500, price: 47500, badge: 'Hemat 5%' },
-  { id: 3, ec: 1000, price: 90000, badge: 'Populer' },
-  { id: 4, ec: 2500, price: 215000, badge: 'Terbaik' },
-  { id: 5, ec: 5000, price: 400000, badge: 'Hemat 20%' },
+  { id: 1, ec: 100, price: 10000, bonus: null },
+  { id: 2, ec: 500, price: 47500, bonus: '5% OFF' },
+  { id: 3, ec: 1000, price: 90000, bonus: '10% OFF' },
+  { id: 4, ec: 2500, price: 215000, bonus: 'Best Value' },
+  { id: 5, ec: 5000, price: 400000, bonus: '20% OFF' },
 ];
 
 const PAYMENT_GROUPS = [
   {
     title: 'E-Wallet & QRIS',
     methods: [
-      { id: 'qris', name: 'QRIS (All E-Wallet)', icon: <QrCode size={18} />, color: '#EA1E63' },
-      { id: 'gopay', name: 'GoPay', icon: <Smartphone size={18} />, color: '#00AED1' },
-      { id: 'ovo', name: 'OVO', icon: <Smartphone size={18} />, color: '#4C3494' },
+      { id: 'qris', name: 'QRIS', icon: <QrCode size={20} />, color: '#EA1E63' },
+      { id: 'gopay', name: 'GoPay', icon: <Smartphone size={20} />, color: '#00AED1' },
+      { id: 'ovo', name: 'OVO', icon: <Smartphone size={20} />, color: '#4C3494' },
     ]
   },
   {
-    title: 'Virtual Account',
+    title: 'Transfer Bank',
     methods: [
-      { id: 'bca', name: 'BCA Virtual Account', icon: <Landmark size={18} />, color: '#005596' },
-      { id: 'mandiri', name: 'Mandiri Virtual Account', icon: <Landmark size={18} />, color: '#FFB800' },
+      { id: 'bca', name: 'BCA Virtual Account', icon: <Landmark size={20} />, color: '#005596' },
+      { id: 'mandiri', name: 'Mandiri Virtual Account', icon: <Landmark size={20} />, color: '#FFB800' },
     ]
   }
 ];
@@ -37,7 +37,6 @@ const TopUp = ({ navigateTo }) => {
 
   const handleProcess = () => {
     setStep('processing');
-    // Simulate payment orchestration
     setTimeout(() => {
       topUp(selectedOption.ec, selectedMethod.name);
       setStep('success');
@@ -46,33 +45,62 @@ const TopUp = ({ navigateTo }) => {
 
   if (step === 'success') {
     return (
-      <div className="page-container flex-center fade-in bg-glow" style={{ padding: '40px 20px', justifyContent: 'center', height: '100%' }}>
-        <div className="success-lottie">
-          <div className="confetti-wrap">
-            {[...Array(12)].map((_, i) => <div key={i} className={`confetti c${i}`}></div>)}
+      <div className="page-container flex-center fade-in bg-receipt-glow">
+        <div className="receipt-container">
+          <div className="receipt-ticket">
+            {/* Ticket Notches */}
+            <div className="notch notch-left"></div>
+            <div className="notch notch-right"></div>
+            
+            <div className="receipt-header">
+              <div className="receipt-success-icon">
+                <CheckCircle2 size={32} color="#fff" strokeWidth={3} />
+              </div>
+              <h2 className="receipt-title">Top Up Berhasil</h2>
+              <div className="receipt-amount-ec">{selectedOption.ec} EC</div>
+              <div className="receipt-amount-fiat">{formatCurrency(selectedOption.price)}</div>
+            </div>
+
+            <div className="receipt-divider">
+              <div className="dashed-line"></div>
+            </div>
+
+            <div className="receipt-body">
+              <div className="receipt-row">
+                <span className="label">Status</span>
+                <span className="value status-success">Berhasil</span>
+              </div>
+              <div className="receipt-row">
+                <span className="label">Metode Pembayaran</span>
+                <span className="value">{selectedMethod.name}</span>
+              </div>
+              <div className="receipt-row">
+                <span className="label">ID Transaksi</span>
+                <span className="value mono">CHMP-{Date.now().toString().slice(-8)}</span>
+              </div>
+              <div className="receipt-row">
+                <span className="label">Waktu</span>
+                <span className="value">Baru Saja</span>
+              </div>
+            </div>
+
+            <div className="receipt-footer">
+              <p>Simpan tanda terima ini sebagai bukti pembayaran yang sah.</p>
+            </div>
           </div>
-          <div className="success-ring">
-            <CheckCircle2 size={60} color="#00C896" strokeWidth={3} />
-          </div>
-        </div>
-        <h2 className="success-title">Pembayaran Berhasil!</h2>
-        <p className="success-desc">
-          Saldo <strong>{selectedOption.ec} EC</strong> telah ditambahkan ke wallet Anda via <strong>{selectedMethod.name}</strong>.
-        </p>
-        
-        <div className="glass-card success-detail" style={{ width: '100%', maxWidth: '320px' }}>
-          <div className="detail-row">
-            <span>ID Transaksi</span>
-            <span>#CHMP-{Date.now().toString().slice(-6)}</span>
-          </div>
-          <div className="detail-row">
-            <span>Waktu</span>
-            <span>Baru Saja</span>
+          
+          <div className="receipt-actions">
+            <button className="receipt-action-btn">
+              <Copy size={16} /> Salin ID
+            </button>
+            <button className="receipt-action-btn">
+              <Share2 size={16} /> Bagikan
+            </button>
           </div>
         </div>
 
-        <button className="primary-btn pulse-anim" style={{ width: '100%', maxWidth: '320px', marginTop: '30px' }} onClick={() => navigateTo('reward')}>
-          Cek Saldo Wallet
+        <button className="primary-btn mt-30" style={{ width: '85%' }} onClick={() => navigateTo('reward')}>
+          Kembali ke Wallet
         </button>
       </div>
     );
@@ -81,237 +109,186 @@ const TopUp = ({ navigateTo }) => {
   if (step === 'processing') {
     return (
       <div className="page-container flex-center fade-in">
-        <div className="processing-wrap">
-          <div className="loader-container">
-            <div className="loader-outer"></div>
-            <div className="loader-inner"></div>
-            <div className="loader-icon"><Loader2 size={32} className="spin-slow" /></div>
-          </div>
-          <h2 className="processing-title">Menunggu Pembayaran</h2>
-          <p className="processing-desc">Mohon tunggu sebentar, kami sedang memverifikasi transaksi Anda.</p>
-          
-          <div className="processing-summary glass-card">
-            <div className="p-sum-label">Total Tagihan</div>
-            <div className="p-sum-val">{formatCurrency(selectedOption.price)}</div>
-          </div>
+        <div className="modern-loader">
+          <div className="loader-orbit"></div>
+          <div className="loader-core"><Loader2 size={32} className="spin-slow" color="var(--primary)" /></div>
         </div>
+        <h2 className="processing-text">Menyinkronkan Saldo...</h2>
+        <p className="processing-subtext">Mohon tunggu sebentar, kami sedang memvalidasi pembayaran Anda melalui {selectedMethod.name}.</p>
       </div>
     );
   }
 
   return (
     <div className="page-container topup-page">
-      <div className="page-header header-glass">
+      <div className="page-header sticky-header">
         <div className="header-left" onClick={() => navigateTo('reward')} style={{ cursor: 'pointer' }}>
           <ArrowLeft size={20} />
-          <div className="header-name">Isi Saldo Edu Coin</div>
+          <div className="header-name">Top Up Saldo</div>
         </div>
       </div>
 
-      <div className="main-scroll hide-scrollbar p-20">
-        {/* Nominal Grid */}
-        <div className="section-label mb-15">
-          <Sparkles size={14} color="var(--primary)" />
-          <span>Pilih Nominal</span>
-        </div>
-        <div className="premium-topup-grid">
-          {TOP_UP_OPTIONS.map(opt => (
-            <div 
-              key={opt.id} 
-              className={`premium-topup-card ${selectedOption.id === opt.id ? 'active' : ''}`}
-              onClick={() => setSelectedOption(opt)}
-            >
-              {opt.badge && <div className="card-badge">{opt.badge}</div>}
-              <div className="card-ec">
-                <span className="ec-num">{opt.ec}</span>
-                <span className="ec-label">EC</span>
-              </div>
-              <div className="card-price">{formatCurrency(opt.price)}</div>
-            </div>
-          ))}
+      <div className="main-scroll hide-scrollbar">
+        <div className="topup-hero">
+          <div className="hero-label">Total Saldo EC Saat Ini</div>
+          <div className="hero-balance">🪙 1,250 <small>EC</small></div>
         </div>
 
-        {/* Payment Methods */}
-        <div className="section-label mt-30 mb-15">
-          <CreditCard size={14} color="var(--primary)" />
-          <span>Metode Pembayaran</span>
-        </div>
-        <div className="payment-groups">
-          {PAYMENT_GROUPS.map((group, idx) => (
-            <div key={idx} className="payment-group">
-              <div className="group-title">{group.title}</div>
-              <div className="group-list glass-card">
-                {group.methods.map(method => (
-                  <div 
-                    key={method.id} 
-                    className={`payment-row ${selectedMethod.id === method.id ? 'active' : ''}`}
-                    onClick={() => setSelectedMethod(method)}
-                  >
-                    <div className="method-icon" style={{ background: `${method.color}15`, color: method.color }}>
-                      {method.icon}
-                    </div>
-                    <div className="method-name">{method.name}</div>
-                    <div className="method-check">
-                      <div className="check-outer">
-                        <div className="check-inner"></div>
+        <div className="section-padding">
+          <div className="section-header-row">
+            <span className="section-title">Pilih Nominal Top Up</span>
+            <span className="section-sub">Dapatkan harga lebih hemat</span>
+          </div>
+          
+          <div className="nominal-grid">
+            {TOP_UP_OPTIONS.map(opt => (
+              <div 
+                key={opt.id} 
+                className={`nominal-card ${selectedOption.id === opt.id ? 'active' : ''}`}
+                onClick={() => setSelectedOption(opt)}
+              >
+                {opt.bonus && <div className="nominal-bonus">{opt.bonus}</div>}
+                <div className="nominal-ec">{opt.ec} <small>EC</small></div>
+                <div className="nominal-price">{formatCurrency(opt.price)}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="section-header-row mt-30">
+            <span className="section-title">Metode Pembayaran</span>
+            <span className="section-sub">Terverifikasi & Aman</span>
+          </div>
+
+          <div className="payment-groups-container">
+            {PAYMENT_GROUPS.map((group, idx) => (
+              <div key={idx} className="payment-group-item">
+                <div className="group-label">{group.title}</div>
+                <div className="methods-wrapper">
+                  {group.methods.map(method => (
+                    <div 
+                      key={method.id} 
+                      className={`method-tile ${selectedMethod.id === method.id ? 'active' : ''}`}
+                      onClick={() => setSelectedMethod(method)}
+                    >
+                      <div className="method-icon-bg" style={{ color: method.color }}>
+                        {method.icon}
+                      </div>
+                      <div className="method-info">
+                        <div className="method-name">{method.name}</div>
+                        <div className="method-desc">Proses Instan</div>
+                      </div>
+                      <div className="method-radio">
+                        <div className="radio-dot"></div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-
-        {/* Footer Summary */}
-        <div className="checkout-bar-spacer"></div>
+        <div style={{ height: '120px' }}></div>
       </div>
 
-      {/* Floating Checkout Bar */}
-      <div className="checkout-bar fade-in-up">
-        <div className="checkout-info">
-          <div className="checkout-label">Total Pembayaran</div>
-          <div className="checkout-val">{formatCurrency(selectedOption.price)}</div>
+      <div className="checkout-sticky">
+        <div className="checkout-content">
+          <div className="checkout-price-wrap">
+            <span className="price-label">Total Pembayaran</span>
+            <span className="price-value">{formatCurrency(selectedOption.price)}</span>
+          </div>
+          <button className="checkout-button-primary" onClick={handleProcess}>
+            Konfirmasi & Bayar
+          </button>
         </div>
-        <button className="checkout-btn" onClick={handleProcess}>
-          Bayar Sekarang <ChevronRight size={18} />
-        </button>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .topup-page { background: var(--bg-dark); }
-        .header-glass { backdrop-filter: blur(10px); background: rgba(13, 13, 43, 0.7); }
-        .section-label { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); }
-        
-        .premium-topup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .premium-topup-card { 
+        .topup-page { background: #0F172A; }
+        .sticky-header { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); z-index: 1000; position: sticky; top: 0; }
+        .topup-hero { padding: 30px 24px; background: linear-gradient(135deg, rgba(245,166,35,0.1), transparent); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .hero-label { font-size: 0.75rem; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .hero-balance { font-size: 2rem; font-weight: 800; color: #fff; }
+        .hero-balance small { font-size: 1rem; color: var(--primary); }
+
+        .section-header-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+        .section-title { font-size: 1rem; font-weight: 800; color: #fff; }
+        .section-sub { font-size: 0.75rem; color: #94A3B8; }
+
+        .nominal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .nominal-card { 
           background: rgba(255,255,255,0.03); 
-          border: 1.5px solid rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.05); 
           border-radius: 20px; 
           padding: 24px 16px; 
-          text-align: center; 
           position: relative; 
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          overflow: hidden;
+          transition: all 0.3s; 
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
-        .premium-topup-card.active { 
-          background: rgba(0, 200, 150, 0.08); 
-          border-color: var(--primary);
-          transform: translateY(-4px);
-          box-shadow: 0 10px 20px rgba(0, 200, 150, 0.15);
-        }
-        .card-badge {
-          position: absolute;
-          top: 0;
-          right: 0;
-          background: var(--primary);
-          color: #000;
-          font-size: 0.6rem;
-          font-weight: 900;
-          padding: 4px 10px;
-          border-bottom-left-radius: 12px;
-          text-transform: uppercase;
-        }
-        .card-ec { margin-bottom: 8px; }
-        .ec-num { font-size: 1.6rem; font-weight: 900; color: #fff; }
-        .ec-label { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-left: 4px; }
-        .card-price { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .nominal-card.active { background: rgba(245,166,35,0.08); border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(245,166,35,0.15); }
+        .nominal-bonus { position: absolute; top: 0; right: 0; background: var(--primary); color: #000; font-size: 0.6rem; font-weight: 900; padding: 4px 12px; border-bottom-left-radius: 12px; }
+        .nominal-ec { font-size: 1.5rem; font-weight: 900; color: #fff; }
+        .nominal-ec small { font-size: 0.8rem; color: var(--primary); }
+        .nominal-price { font-size: 0.85rem; color: #94A3B8; margin-top: 4px; font-weight: 600; }
+
+        .payment-group-item { margin-bottom: 24px; }
+        .group-label { font-size: 0.7rem; font-weight: 700; color: #64748B; text-transform: uppercase; margin-bottom: 12px; padding-left: 4px; }
+        .methods-wrapper { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .method-tile { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 16px; transition: all 0.2s; cursor: pointer; }
+        .method-tile.active { background: rgba(255,255,255,0.04); }
+        .method-icon-bg { width: 44px; height: 44px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .method-info { flex: 1; }
+        .method-name { font-size: 0.9rem; font-weight: 700; color: #fff; }
+        .method-desc { font-size: 0.7rem; color: #64748B; margin-top: 2px; }
+        .method-radio { width: 22px; height: 22px; border: 2px solid #334155; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .method-tile.active .method-radio { border-color: var(--primary); }
+        .radio-dot { width: 10px; height: 10px; background: var(--primary); border-radius: 50%; transform: scale(0); transition: all 0.2s; }
+        .method-tile.active .radio-dot { transform: scale(1); }
+
+        .checkout-sticky { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.05); padding: 16px 20px 34px; z-index: 2000; }
+        .checkout-content { display: flex; align-items: center; justify-content: space-between; max-width: 410px; margin: 0 auto; }
+        .checkout-price-wrap { display: flex; flex-direction: column; }
+        .price-label { font-size: 0.7rem; color: #94A3B8; font-weight: 600; }
+        .price-value { font-size: 1.25rem; font-weight: 900; color: #fff; }
+        .checkout-button-primary { background: var(--primary); color: #000; padding: 14px 28px; border-radius: 16px; font-weight: 900; border: none; font-size: 0.95rem; box-shadow: 0 8px 24px rgba(245,166,35,0.3); }
+
+        /* Modern Loader */
+        .modern-loader { position: relative; width: 80px; height: 80px; margin-bottom: 30px; }
+        .loader-orbit { position: absolute; inset: 0; border: 2px dashed rgba(245,166,35,0.3); border-radius: 50%; animation: spin 4s linear infinite; }
+        .loader-core { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .processing-text { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
+        .processing-subtext { font-size: 0.9rem; color: #94A3B8; max-width: 280px; line-height: 1.6; }
+
+        /* Receipt Success Screen */
+        .bg-receipt-glow { background: radial-gradient(circle at center, rgba(16,185,129,0.1), transparent 70%); }
+        .receipt-container { width: 90%; max-width: 340px; filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5)); }
+        .receipt-ticket { background: #fff; border-radius: 24px; padding: 40px 24px 24px; position: relative; color: #1E293B; overflow: hidden; }
+        .notch { position: absolute; width: 24px; height: 24px; background: #0F172A; border-radius: 50%; top: 155px; }
+        .notch-left { left: -12px; }
+        .notch-right { right: -12px; }
         
-        .payment-groups { display: flex; flex-direction: column; gap: 20px; }
-        .group-title { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; padding-left: 4px; text-transform: uppercase; letter-spacing: 1px; }
-        .group-list { padding: 4px; border-radius: 16px; }
-        .payment-row { 
-          display: flex; 
-          align-items: center; 
-          gap: 12px; 
-          padding: 12px; 
-          border-radius: 12px; 
-          cursor: pointer;
-          transition: background 0.2s;
-        }
-        .payment-row:active { background: rgba(255,255,255,0.05); }
-        .payment-row.active .check-inner { opacity: 1; transform: scale(1); }
-        .method-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-        .method-name { flex: 1; font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
-        .check-outer { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .check-inner { width: 10px; height: 10px; background: var(--primary); border-radius: 50%; opacity: 0; transform: scale(0.5); transition: all 0.2s; }
+        .receipt-header { text-align: center; margin-bottom: 30px; }
+        .receipt-success-icon { width: 64px; height: 64px; background: #00C896; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 8px 20px rgba(0, 200, 150, 0.4); }
+        .receipt-title { font-size: 1.25rem; font-weight: 800; color: #1E293B; margin-bottom: 15px; }
+        .receipt-amount-ec { font-size: 2.2rem; font-weight: 900; color: #000; line-height: 1; }
+        .receipt-amount-fiat { font-size: 0.9rem; font-weight: 700; color: #64748B; margin-top: 4px; }
 
-        .checkout-bar {
-          position: fixed;
-          bottom: 0; left: 0; right: 0;
-          background: rgba(13, 13, 43, 0.9);
-          backdrop-filter: blur(20px);
-          padding: 16px 20px 34px 20px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          border-top: 1px solid rgba(255,255,255,0.05);
-          z-index: 100;
-        }
-        .checkout-info { display: flex; flex-direction: column; }
-        .checkout-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
-        .checkout-val { font-size: 1.2rem; color: #fff; font-weight: 800; }
-        .checkout-btn {
-          background: var(--primary);
-          color: #000;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 14px;
-          font-weight: 800;
-          font-size: 0.9rem;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          box-shadow: 0 8px 20px rgba(0, 200, 150, 0.3);
-        }
-        .checkout-bar-spacer { height: 120px; }
+        .receipt-divider { margin: 25px 0; }
+        .dashed-line { border-top: 2px dashed #E2E8F0; width: 100%; }
 
-        /* Processing Styles */
-        .processing-wrap { text-align: center; padding: 40px 20px; width: 100%; }
-        .loader-container { position: relative; width: 100px; height: 100px; margin: 0 auto 30px auto; }
-        .loader-outer { position: absolute; inset: 0; border: 3px solid rgba(0, 200, 150, 0.1); border-radius: 50%; }
-        .loader-inner { position: absolute; inset: 0; border: 3px solid transparent; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
-        .loader-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--primary); }
-        .processing-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 12px; }
-        .processing-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px; line-height: 1.5; }
-        .processing-summary { padding: 20px; text-align: center; }
-        .p-sum-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
-        .p-sum-val { font-size: 1.5rem; font-weight: 900; color: #fff; }
+        .receipt-body { display: flex; flex-direction: column; gap: 16px; }
+        .receipt-row { display: flex; justify-content: space-between; align-items: center; }
+        .receipt-row .label { font-size: 0.8rem; font-weight: 600; color: #64748B; }
+        .receipt-row .value { font-size: 0.85rem; font-weight: 800; color: #1E293B; }
+        .receipt-row .value.mono { font-family: monospace; font-size: 0.75rem; letter-spacing: 0.5px; }
+        .receipt-row .value.status-success { color: #059669; }
 
-        /* Success Styles */
-        .success-lottie { position: relative; margin-bottom: 30px; }
-        .success-ring { width: 100px; height: 100px; background: rgba(0, 200, 150, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .success-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 12px; color: #fff; }
-        .success-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 30px; padding: 0 20px; line-height: 1.6; }
-        .success-detail { width: 100%; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-        .detail-row { display: flex; justify-content: space-between; font-size: 0.85rem; }
-        .detail-row span:first-child { color: var(--text-muted); }
-        .detail-row span:last-child { color: #fff; font-weight: 700; }
+        .receipt-footer { margin-top: 35px; text-align: center; padding-top: 20px; border-top: 1px solid #F1F5F9; }
+        .receipt-footer p { font-size: 0.65rem; color: #94A3B8; font-weight: 600; line-height: 1.5; }
 
-        .confetti-wrap { position: absolute; inset: 0; pointer-events: none; }
-        .confetti { position: absolute; width: 6px; height: 6px; background: var(--primary); border-radius: 1px; animation: confettiFall 2s ease-out forwards; opacity: 0; }
-        ${[...Array(12)].map((_, i) => `
-          .c${i} { 
-            left: ${50 + (Math.random() - 0.5) * 80}%; 
-            top: 50%; 
-            background: ${['#00C896', '#FFD700', '#00AED1', '#EA1E63'][i % 4]};
-            animation-delay: ${i * 0.1}s;
-          }
-        `).join('')}
-
-        @keyframes confettiFall {
-          0% { transform: translateY(0) rotate(0); opacity: 1; }
-          100% { transform: translateY(100px) rotate(720deg); opacity: 0; }
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes bounceIn { from { transform: scale(0); } to { transform: scale(1); } }
-        .spin-slow { animation: spin 3s linear infinite; }
-        .pulse-anim { animation: pulseBtn 2s infinite; }
-        @keyframes pulseBtn { 
-          0% { box-shadow: 0 8px 20px rgba(0, 200, 150, 0.3); }
-          50% { box-shadow: 0 8px 30px rgba(0, 200, 150, 0.5); }
-          100% { box-shadow: 0 8px 20px rgba(0, 200, 150, 0.3); }
-        }
+        .receipt-actions { display: flex; gap: 12px; margin-top: 20px; }
+        .receipt-action-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; }
       `}} />
     </div>
   );
