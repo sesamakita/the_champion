@@ -103,7 +103,21 @@ export const PACKAGES = [
 ];
 
 export const MOCK_BOOKS = [
-  { id: 11, title: 'Speak: Mengatasi Rasa Takut Bicara', author: 'Deni Apps', genre: 'Self-Help', cover: '🎤', pages: 120, chapters: 12, rating: 5.0, progress: 0, rewardEC: 50, color: '#FF5733', isPremium: true, pdfUrl: '/books/speak-book.pdf' },
+  { 
+    id: 11, 
+    title: 'Speak: Mengatasi Rasa Takut Bicara', 
+    author: 'Deni Apps', 
+    genre: 'Self-Help', 
+    cover: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&q=80&w=400', 
+    pages: 120, 
+    chapters: 12, 
+    rating: 5.0, 
+    progress: 0, 
+    rewardEC: 50, 
+    color: '#FF5733', 
+    isPremium: false, 
+    pdfUrl: '/books/speak-book.pdf' 
+  },
   { id: 1, title: 'Atomic Habits', author: 'James Clear', genre: 'Self-Help', cover: '📘', pages: 320, chapters: 20, rating: 4.8, progress: 0, rewardEC: 40, color: '#4A90D9', isPremium: true },
   { id: 2, title: 'Filosofi Teras', author: 'Henry Manampiring', genre: 'Filosofi', cover: '📙', pages: 280, chapters: 16, rating: 4.7, progress: 0, rewardEC: 40, color: '#F5A623', isPremium: true },
   { id: 3, title: 'Laut Bercerita', author: 'Leila S. Chudori', genre: 'Fiksi', cover: '📕', pages: 400, chapters: 24, rating: 4.9, progress: 0, rewardEC: 40, color: '#E74C3C', isPremium: true },

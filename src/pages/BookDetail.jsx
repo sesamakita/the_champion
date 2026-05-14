@@ -13,7 +13,11 @@ const BookDetail = ({ book, navigateTo }) => {
       <div className="main-scroll hide-scrollbar">
         {/* Cover */}
         <div className="glass-card fade-in" style={{ padding: '32px', textAlign: 'center' }}>
-          <div style={{ fontSize: '5rem', marginBottom: 16 }}>{book.cover}</div>
+          {book.cover.startsWith('http') ? (
+            <img src={book.cover} alt={book.title} style={{ width: '150px', height: '220px', objectFit: 'cover', borderRadius: '16px', marginBottom: '16px', boxShadow: '0 15px 35px rgba(0,0,0,0.2)' }} />
+          ) : (
+            <div style={{ fontSize: '5rem', marginBottom: 16 }}>{book.cover}</div>
+          )}
           <h2 style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'var(--font-main)' }}>{book.title}</h2>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: 4 }}>{book.author}</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 16 }}>
