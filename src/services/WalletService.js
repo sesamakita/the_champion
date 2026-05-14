@@ -1,5 +1,5 @@
 import StorageService, { STORAGE_KEYS } from './StorageService';
-import { MOCK_USER, MOCK_TRANSACTIONS, EC_CONFIG, EARNING_RULES } from '../data/mockData';
+import { MOCK_USER, MOCK_TRANSACTIONS, EC_CONFIG, EARNING_RULES, PACKAGES } from '../data/mockData';
 
 /**
  * WalletService
@@ -106,25 +106,48 @@ const WalletService = {
         const pkg = PACKAGES.find(p => p.id === packageId);
         if (!pkg) return { success: false, message: 'Paket tidak ditemukan' };
 
-        const wallet = this.getWallet();
+        const user = this.getUser();
+        const wallet = user.wallet;
+        
         if (wallet.totalBalance < pkg.priceEC) {
             return { success: false, message: 'Saldo EC tidak cukup' };
         }
 
-        // Deduct balance
+        // 1. Deduct balance from buyer
         this.addTransaction({
-            type: 'SPEND_BOOK', // Using book spend for now, could add SPEND_PACKAGE
+            type: 'SPEND_BOOK', // Using book spend for now
             label: `Beli Paket: ${pkg.name}`,
             amount: -pkg.priceEC
         });
 
-        // Update user's package
-        const user = this.getUser();
+        // 2. Update user's package status
         user.package = pkg.id;
         StorageService.save(STORAGE_KEYS.CURRENT_USER, user);
 
+        // 3. Handle Referral Commission (if invited by someone)
+        const invitedBy = StorageService.get(STORAGE_KEYS.REFERRAL_CODE); // The code used during registration
+        if (invitedBy) {
+            this.processReferralCommission(invitedBy, pkg);
+        }
+
         window.dispatchEvent(new Event('storage'));
         return { success: true, message: `Berhasil membeli paket ${pkg.name}` };
+    },
+
+    /**
+     * Process referral commission for the inviter
+     */
+    processReferralCommission(inviterCode, purchasedPkg) {
+        // In a real app, we would find the user with this referral code in DB
+        // For mock, we'll just simulate adding a transaction for "The Inviter"
+        const commissionAmount = Math.floor(purchasedPkg.priceEC * purchasedPkg.referralCommission);
+        
+        // This is a bit tricky for mock because we are currently "The Buyer".
+        // In this local architecture, we'll just log it or simulate it.
+        console.log(`Referral Commission: ${commissionAmount} EC sent to inviter ${inviterCode}`);
+        
+        // To make it visible in MOCK_TRANSACTIONS for the current session if they were the inviter
+        // but since we are the buyer, we just log it for now.
     },
 
     /**

@@ -13,6 +13,7 @@ import BookReader from './pages/BookReader';
 import SplashScreen from './SplashScreen';
 import Onboarding from './pages/Onboarding';
 import Auth from './pages/Auth';
+import TopUp from './pages/TopUp';
 import { MOCK_BOOKS, MOCK_USER } from './data/mockData';
 
 function App() {
@@ -105,6 +106,7 @@ function App() {
         const rBook = MOCK_BOOKS.find(b => b.id === rBookId) || MOCK_BOOKS[0];
         return <BookReader book={rBook} navigateTo={navigateTo} localFile={viewData?.localFile} />;
       case 'package-select': return <PackageSelect navigateTo={navigateTo} />;
+      case 'topup': return <TopUp navigateTo={navigateTo} />;
       default: return <Dashboard navigateTo={navigateTo} />;
     }
   };

@@ -30,8 +30,7 @@ const Reward = ({ navigateTo }) => {
                 <div className="ec-wallet-rupiah">≈ Rp 0</div>
               </div>
               <div className="ec-wallet-actions">
-                <button className="ec-action-btn primary" style={{ opacity: 0.5 }} disabled>
-                  <Lock size={14} />
+                <button className="ec-action-btn primary" onClick={() => navigateTo('topup')}>
                   <span>Top Up</span>
                 </button>
                 <button className="ec-action-btn outline" style={{ opacity: 0.5 }} disabled>
@@ -132,15 +131,15 @@ const Reward = ({ navigateTo }) => {
                 </div>
               </div>
               <div className="ec-wallet-actions">
-                <button className="ec-action-btn primary">
+                <button className="ec-action-btn primary" onClick={() => navigateTo('topup')}>
                   <ArrowUpRight size={16} />
                   <span>Top Up</span>
                 </button>
-                <button className="ec-action-btn outline">
+                <button className="ec-action-btn outline" style={{ opacity: 0.5 }} disabled>
                   <Download size={16} />
                   <span>Tarik</span>
                 </button>
-                <button className="ec-action-btn outline">
+                <button className="ec-action-btn outline" style={{ opacity: 0.5 }} disabled>
                   <Gift size={16} />
                   <span>Hadiah</span>
                 </button>
@@ -186,24 +185,28 @@ const Reward = ({ navigateTo }) => {
 
             {tab === 'overview' && (
               <div className="glass-card fade-in">
-                {MOCK_TRANSACTIONS.map(tx => {
-                  const meta = TX_META[tx.type] || { icon: '🪙', color: 'var(--text-muted)', label: '—' };
-                  const isSpend = tx.amount < 0;
-                  return (
-                    <div key={tx.id} className="tx-item">
-                      <div className="tx-icon" style={{ background: `${meta.color}15`, color: meta.color }}>
-                        {meta.icon}
+                {transactions.length > 0 ? (
+                  transactions.map(tx => {
+                    const meta = TX_META[tx.type] || { icon: '🪙', color: 'var(--text-muted)', label: '—' };
+                    const isSpend = tx.amount < 0;
+                    return (
+                      <div key={tx.id} className="tx-item">
+                        <div className="tx-icon" style={{ background: `${meta.color}15`, color: meta.color }}>
+                          {meta.icon}
+                        </div>
+                        <div className="tx-info">
+                          <div className="tx-label">{tx.label}</div>
+                          <div className="tx-date">{tx.date}</div>
+                        </div>
+                        <div className={`tx-amount ${isSpend ? 'spend' : ''}`}>
+                          {isSpend ? '' : '+'}{tx.amount} EC
+                        </div>
                       </div>
-                      <div className="tx-info">
-                        <div className="tx-label">{tx.label}</div>
-                        <div className="tx-date">{tx.date}</div>
-                      </div>
-                      <div className={`tx-amount ${isSpend ? 'spend' : ''}`}>
-                        {isSpend ? '' : '+'}{tx.amount} EC
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="empty-state">Belum ada transaksi</div>
+                )}
               </div>
             )}
 
