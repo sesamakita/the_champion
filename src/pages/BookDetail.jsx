@@ -68,7 +68,7 @@ const BookDetail = ({ book, navigateTo }) => {
         <div className="glass-card fade-in" style={{ padding: 'var(--space-md)' }}>
           <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 8 }}>📝 Sinopsis</h3>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-            Buku ini mengungkap bagaimana perubahan kecil yang dilakukan secara konsisten dapat menghasilkan dampak luar biasa. Dengan pendekatan ilmiah dan contoh nyata, penulis membantu pembaca memahami cara membangun kebiasaan baik dan menghilangkan kebiasaan buruk.
+            {book.synopsis || 'Mulai membaca untuk mempelajari lebih lanjut tentang materi luar biasa di dalam buku ini.'}
           </p>
         </div>
 

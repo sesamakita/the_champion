@@ -52,7 +52,7 @@ const Library = ({ navigateTo }) => {
 
         <div className="books-grid">
           {filtered.map(book => (
-            <div key={book.id} className="book-card" onClick={() => navigateTo('book-detail')}>
+            <div key={book.id} className="book-card" onClick={() => navigateTo('book-detail', { bookId: book.id })}>
               <div className="book-cover" style={{ background: `linear-gradient(135deg, ${book.color}22, ${book.color}44)` }}>
                 <span>{book.cover}</span>
                 {book.isPremium && <div className="book-premium-tag">PREMIUM</div>}
