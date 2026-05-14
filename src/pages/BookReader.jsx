@@ -193,12 +193,15 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           display: flex;
           justify-content: center;
           min-height: 100%;
+          width: fit-content;
+          margin: 0 auto;
         }
         .reader-page-shadow canvas {
           box-shadow: 0 10px 40px rgba(0,0,0,0.1);
           border-radius: 4px;
-          max-width: 100%;
+          max-width: none !important;
           height: auto !important;
+          transition: transform 0.2s ease;
         }
         .reader-loading {
           display: flex;
