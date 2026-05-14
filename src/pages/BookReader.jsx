@@ -4,8 +4,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Setup worker untuk react-pdf menggunakan versi yang spesifik dan stabil
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+// Setup worker untuk react-pdf menggunakan UNPKG yang lebih andal untuk versi spesifik
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const BookReader = ({ book, navigateTo, localFile }) => {
   const [numPages, setNumPages] = useState(null);
@@ -74,17 +74,31 @@ const BookReader = ({ book, navigateTo, localFile }) => {
               }
               error={
                 <div className="reader-error">
-                  <p>Gagal memuat PDF. Pastikan file valid.</p>
+                  <p>Gagal memuat PDF secara otomatis.</p>
+                  <a 
+                    href={pdfSource} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="withdraw-btn"
+                    style={{ marginTop: 12, display: 'inline-block', fontSize: '0.8rem' }}
+                  >
+                    Buka File Secara Manual
+                  </a>
+                  <p style={{ fontSize: '0.65rem', marginTop: 8, color: 'var(--text-muted)' }}>
+                    (Adblocker/VPN mungkin memblokir mesin pembaca)
+                  </p>
                 </div>
               }
             >
               <Page 
+                key={`page_${currentPage}`}
                 pageNumber={currentPage} 
                 scale={scale}
                 renderAnnotationLayer={false}
                 renderTextLayer={true}
                 className="reader-page-shadow"
                 width={window.innerWidth > 600 ? 600 : window.innerWidth - 48}
+                loading={null}
               />
             </Document>
           ) : (
