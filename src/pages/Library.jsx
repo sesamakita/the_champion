@@ -24,6 +24,26 @@ const Library = ({ navigateTo }) => {
           <input placeholder="Cari judul atau penulis..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
 
+        <div style={{ padding: '0 var(--space-lg) var(--space-md)' }}>
+          <input 
+            type="file" 
+            id="local-pdf-picker" 
+            accept="application/pdf" 
+            style={{ display: 'none' }} 
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) navigateTo('book-reader', { localFile: file });
+            }}
+          />
+          <button 
+            className="withdraw-btn" 
+            style={{ marginTop: 0, background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px dashed var(--border-glow)' }}
+            onClick={() => document.getElementById('local-pdf-picker').click()}
+          >
+            📂 Ujicoba PDF Lokal Anda
+          </button>
+        </div>
+
         <div className="genre-chips hide-scrollbar">
           {GENRES.map(g => (
             <div key={g} className={`genre-chip ${genre === g ? 'active' : ''}`} onClick={() => setGenre(g)}>{g}</div>

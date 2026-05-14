@@ -1,8 +1,7 @@
 import { MOCK_BOOKS, formatEC } from '../data/mockData';
 import { ArrowLeft, BookOpen, Clock, Star, Trophy } from 'lucide-react';
 
-const BookDetail = ({ navigateTo }) => {
-  const book = MOCK_BOOKS[0]; // Atomic Habits as example
+const BookDetail = ({ book, navigateTo }) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -74,7 +73,11 @@ const BookDetail = ({ navigateTo }) => {
         </div>
 
         {/* CTA */}
-        <button className="withdraw-btn fade-in" style={{ marginTop: 0 }}>
+        <button 
+          className="withdraw-btn fade-in" 
+          style={{ marginTop: 0 }}
+          onClick={() => navigateTo('book-reader', { bookId: book.id })}
+        >
           <BookOpen size={16} style={{ verticalAlign: 'middle', marginRight: 8 }} />
           {book.progress > 0 ? 'Lanjut Membaca' : 'Mulai Membaca'}
         </button>

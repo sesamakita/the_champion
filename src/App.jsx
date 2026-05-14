@@ -9,15 +9,18 @@ import Profile from './pages/Profile';
 import Referral from './pages/Referral';
 import BookDetail from './pages/BookDetail';
 import PackageSelect from './pages/PackageSelect';
+import BookReader from './pages/BookReader';
 import SplashScreen from './SplashScreen';
 import Onboarding from './pages/Onboarding';
 import Auth from './pages/Auth';
+import { MOCK_BOOKS } from './data/mockData';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('the_champion_onboarded'));
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('the_champion_logged_in') === 'true');
   const [view, setView] = useState('dashboard');
+  const [viewData, setViewData] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 2800);
@@ -55,7 +58,10 @@ function App() {
 
   useEffect(() => { window.scrollTo(0, 0); }, [view]);
 
-  const navigateTo = (page) => setView(page);
+  const navigateTo = (page, data = null) => {
+    setView(page);
+    setViewData(data);
+  };
 
   if (showSplash) {
     return <SplashScreen version="1.0.0" message="Mempersiapkan pengalaman membaca..." />;
@@ -81,7 +87,14 @@ function App() {
       case 'reward': return <Reward navigateTo={navigateTo} />;
       case 'profile': return <Profile navigateTo={navigateTo} />;
       case 'referral': return <Referral navigateTo={navigateTo} />;
-      case 'book-detail': return <BookDetail navigateTo={navigateTo} />;
+      case 'book-detail': 
+        const bookId = viewData?.bookId || 1;
+        const book = MOCK_BOOKS.find(b => b.id === bookId) || MOCK_BOOKS[0];
+        return <BookDetail book={book} navigateTo={navigateTo} />;
+      case 'book-reader':
+        const rBookId = viewData?.bookId || 1;
+        const rBook = MOCK_BOOKS.find(b => b.id === rBookId) || MOCK_BOOKS[0];
+        return <BookReader book={rBook} navigateTo={navigateTo} localFile={viewData?.localFile} />;
       case 'package-select': return <PackageSelect navigateTo={navigateTo} />;
       default: return <Dashboard navigateTo={navigateTo} />;
     }
