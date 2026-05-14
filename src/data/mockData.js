@@ -108,7 +108,7 @@ export const MOCK_BOOKS = [
     title: 'Speak: Mengatasi Rasa Takut Bicara', 
     author: 'Deni Apps', 
     genre: 'Self-Help', 
-    cover: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&q=80&w=400', 
+    cover: '/books/speak-cover.png', 
     pages: 120, 
     chapters: 12, 
     rating: 5.0, 
