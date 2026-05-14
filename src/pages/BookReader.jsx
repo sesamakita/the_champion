@@ -145,12 +145,42 @@ const BookReader = ({ book, navigateTo, localFile }) => {
         </div>
 
         <div className="reader-settings-bar">
-          <button className={`theme-dot light ${theme === 'light' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setTheme('light'); }}></button>
-          <button className={`theme-dot sepia ${theme === 'sepia' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setTheme('sepia'); }}></button>
-          <button className={`theme-dot dark ${theme === 'dark' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setTheme('dark'); }}></button>
+          {/* Theme Dots */}
+          <button className={`theme-dot light ${theme === 'light' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setTheme('light'); }} title="Light"></button>
+          <button className={`theme-dot sepia ${theme === 'sepia' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setTheme('sepia'); }} title="Sepia"></button>
+          <button className={`theme-dot dark ${theme === 'dark' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setTheme('dark'); }} title="Dark"></button>
+          
           <div className="divider"></div>
-          <button className="setting-icon" onClick={(e) => { e.stopPropagation(); setScale(prev => prev + 0.1); }}><Settings size={18} /></button>
-          <button className="setting-icon" onClick={(e) => { e.stopPropagation(); setScale(1.0); }}><Maximize2 size={18} /></button>
+          
+          {/* Zoom Controls */}
+          <div className="zoom-controls">
+            <button 
+              className="setting-icon" 
+              onClick={(e) => { e.stopPropagation(); setScale(prev => Math.max(0.5, prev - 0.1)); }}
+              title="Zoom Out"
+            >
+              <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>−</div>
+            </button>
+            
+            <span className="zoom-level" onClick={(e) => { e.stopPropagation(); setScale(1.0); }} title="Reset Zoom">
+              {Math.round(scale * 100)}%
+            </span>
+            
+            <button 
+              className="setting-icon" 
+              onClick={(e) => { e.stopPropagation(); setScale(prev => Math.min(2.5, prev + 0.1)); }}
+              title="Zoom In"
+            >
+              <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>+</div>
+            </button>
+          </div>
+
+          <div className="divider"></div>
+          
+          <button className="setting-icon" onClick={(e) => { e.stopPropagation(); setScale(1.0); }} title="Fit to Width">
+            <Maximize2 size={18} />
+          </button>
+          
           <div className="reward-badge-reader">
             <span className="reward-icon">🪙</span>
             <span>+40 EC</span>
@@ -180,8 +210,23 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           color: var(--text-muted);
           font-weight: 700;
         }
-        .animate-spin { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .zoom-controls {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .zoom-level {
+          font-size: 0.75rem;
+          font-weight: 800;
+          color: var(--text-primary);
+          background: rgba(0,0,0,0.05);
+          padding: 4px 8px;
+          border-radius: 6px;
+          min-width: 45px;
+          text-align: center;
+          cursor: pointer;
+        }
+        .zoom-level:hover { background: rgba(0,0,0,0.1); }
       `}} />
     </div>
   );
