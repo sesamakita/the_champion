@@ -1,4 +1,4 @@
-import { MOCK_BOOKS, formatCurrency } from '../data/mockData';
+import { MOCK_BOOKS, formatEC } from '../data/mockData';
 import { ArrowLeft, BookOpen, Clock, Star, Trophy } from 'lucide-react';
 
 const BookDetail = ({ navigateTo }) => {
@@ -34,13 +34,22 @@ const BookDetail = ({ navigateTo }) => {
         </div>
 
         {/* Reward Info */}
-        <div className="glass-card glass-card-glow fade-in" style={{ padding: 'var(--space-md)', display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--primary-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trophy size={20} color="var(--primary)" /></div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>Reward Membaca</div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Selesaikan buku ini untuk mendapatkan</div>
+        <div className="glass-card glass-card-glow fade-in ec-reward-info-card">
+          <div className="ec-reward-info-left">
+            <div className="ec-reward-info-icon"><Trophy size={20} color="var(--primary)" /></div>
+            <div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 700 }}>Reward Membaca</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Selesaikan buku + quiz</div>
+            </div>
           </div>
-          <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--primary)', fontFamily: 'var(--font-main)' }}>{formatCurrency(book.rewardPerBook)}</div>
+          <div className="ec-reward-info-right">
+            <div className="ec-reward-badge">
+              <span className="ec-reward-badge-icon">🪙</span>
+              <span className="ec-reward-badge-amount">{book.rewardEC}</span>
+              <span className="ec-reward-badge-sym">EC</span>
+            </div>
+            <div className="ec-reward-info-bonus">+ 15 EC quiz bonus</div>
+          </div>
         </div>
 
         {/* Progress */}

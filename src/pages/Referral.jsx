@@ -1,9 +1,11 @@
-import { MOCK_USER, MOCK_REFERRALS, formatCurrency } from '../data/mockData';
-import { ArrowLeft, Copy, Share2, Users } from 'lucide-react';
+import { MOCK_USER, MOCK_REFERRALS, PACKAGES, formatEC } from '../data/mockData';
+import { ArrowLeft, Copy, Share2 } from 'lucide-react';
 
 const Referral = ({ navigateTo }) => {
   const user = MOCK_USER;
-  const totalCommission = MOCK_REFERRALS.reduce((s, r) => s + r.commission, 0);
+  const userPkg = PACKAGES.find(p => p.id === user.package);
+  const totalCommission = MOCK_REFERRALS.reduce((s, r) => s + r.commissionEC, 0);
+  const commissionRate = userPkg ? userPkg.referralCommission * 100 : 12;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -26,9 +28,9 @@ const Referral = ({ navigateTo }) => {
             <div className="stat-mini-label">Aktif</div>
           </div>
           <div className="stat-mini">
-            <div className="stat-mini-icon">💰</div>
-            <div className="stat-mini-value">{formatCurrency(totalCommission)}</div>
-            <div className="stat-mini-label">Total Komisi</div>
+            <div className="stat-mini-icon">🪙</div>
+            <div className="stat-mini-value">{totalCommission}</div>
+            <div className="stat-mini-label">Total EC</div>
           </div>
         </div>
 
@@ -36,7 +38,26 @@ const Referral = ({ navigateTo }) => {
         <div className="glass-card glass-card-glow referral-code-box fade-in">
           <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>Kode Referral Kamu</div>
           <div className="referral-code">{user.referralCode}</div>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 'var(--space-md)' }}>Bagikan kode ini dan dapatkan komisi 12% dari setiap pembelian paket</p>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: 'var(--space-md)' }}>
+            Bagikan kode ini dan dapatkan komisi <span className="ec-inline">{commissionRate}%</span> dari setiap pembelian paket
+          </p>
+
+          {/* Commission Preview */}
+          <div className="ec-commission-preview">
+            <div className="ec-commission-row">
+              <span>Undang beli Starter</span>
+              <span className="ec-inline">+{Math.round(990 * userPkg.referralCommission)} EC</span>
+            </div>
+            <div className="ec-commission-row">
+              <span>Undang beli Reader</span>
+              <span className="ec-inline">+{Math.round(2490 * userPkg.referralCommission)} EC</span>
+            </div>
+            <div className="ec-commission-row">
+              <span>Undang beli Premium</span>
+              <span className="ec-inline">+{Math.round(4990 * userPkg.referralCommission)} EC</span>
+            </div>
+          </div>
+
           <div className="referral-actions">
             <button className="ref-btn primary"><Copy size={14} /> Salin</button>
             <button className="ref-btn outline"><Share2 size={14} /> Bagikan</button>
@@ -56,7 +77,7 @@ const Referral = ({ navigateTo }) => {
                   <div className="ref-name">{ref.name}</div>
                   <div className="ref-detail">Paket {ref.package} · {ref.date}</div>
                 </div>
-                <div className="ref-commission">+{formatCurrency(ref.commission)}</div>
+                <div className="ref-commission">+{formatEC(ref.commissionEC)}</div>
               </div>
             ))}
           </div>

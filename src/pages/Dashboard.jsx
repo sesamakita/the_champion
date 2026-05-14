@@ -1,8 +1,9 @@
-import { MOCK_USER, MOCK_BOOKS, formatCurrency } from '../data/mockData';
-import { BookOpen, Flame, Target, TrendingUp, ChevronRight } from 'lucide-react';
+import { MOCK_USER, MOCK_BOOKS, EC_CONFIG, formatEC } from '../data/mockData';
+import { BookOpen, Flame, Target, TrendingUp, ChevronRight, Wallet } from 'lucide-react';
 
 const Dashboard = ({ navigateTo }) => {
   const user = MOCK_USER;
+  const wallet = user.wallet;
   const reading = MOCK_BOOKS.filter(b => b.progress > 0 && b.progress < 100);
   const completed = MOCK_BOOKS.filter(b => b.progress === 100).length;
   const days = ['S','S','R','K','J','S','M'];
@@ -27,25 +28,50 @@ const Dashboard = ({ navigateTo }) => {
 
       {/* Scrollable Content */}
       <div className="main-scroll hide-scrollbar">
-        {/* Reward Hero Card */}
-        <div className="reward-hero fade-in">
-          <div className="reward-hero-bg"></div>
-          <div className="reward-hero-content">
-            <div className="reward-hero-label">💰 Total Reward Kamu</div>
-            <div className="reward-hero-amount">{formatCurrency(user.stats.totalReward + user.stats.totalReferralIncome)}</div>
-            <div className="reward-hero-sub">Dari membaca & referral</div>
-            <div className="reward-hero-stats" style={{ justifyContent: 'space-between' }}>
-              <div className="reward-stat" style={{ textAlign: 'left' }}>
-                <div className="reward-stat-value">{formatCurrency(user.stats.totalReward)}</div>
-                <div className="reward-stat-label">Reward Baca</div>
+        {/* Conditional Header: Wallet vs Upgrade Banner */}
+        {!user.package ? (
+          <div className="upgrade-banner fade-in" onClick={() => navigateTo('package-select')}>
+            <div className="upgrade-banner-content">
+              <div className="upgrade-badge">MODE GRATIS</div>
+              <h2 className="upgrade-title">Buka Potensi Reward Kamu! 🚀</h2>
+              <p className="upgrade-desc">Kamu bisa menghasilkan hingga <strong>2.750 EC</strong> dengan upgrade ke paket Premium.</p>
+              <div className="upgrade-stats">
+                <div className="upgrade-stat-item">
+                  <span className="val">🪙 40 EC</span>
+                  <span className="lbl">Per Buku</span>
+                </div>
+                <div className="upgrade-stat-item">
+                  <span className="val">👥 15%</span>
+                  <span className="lbl">Komisi</span>
+                </div>
               </div>
-              <div className="reward-stat" style={{ textAlign: 'right' }}>
-                <div className="reward-stat-value">{formatCurrency(user.stats.totalReferralIncome)}</div>
-                <div className="reward-stat-label">Komisi Referral</div>
+              <button className="upgrade-action-btn">Pilih Paket Sekarang</button>
+            </div>
+            <div className="upgrade-banner-bg"></div>
+          </div>
+        ) : (
+          <div className="reward-hero fade-in" onClick={() => navigateTo('reward')} style={{ cursor: 'pointer' }}>
+            <div className="reward-hero-bg"></div>
+            <div className="reward-hero-content">
+              <div className="reward-hero-label">🪙 Edu Coin Wallet</div>
+              <div className="ec-hero-amount">
+                <span className="ec-amount-number">{wallet.totalBalance.toLocaleString('id-ID')}</span>
+                <span className="ec-amount-symbol">EC</span>
+              </div>
+              <div className="reward-hero-sub">≈ Rp {(wallet.totalBalance * EC_CONFIG.exchangeRate).toLocaleString('id-ID')}</div>
+              <div className="reward-hero-stats" style={{ justifyContent: 'space-between' }}>
+                <div className="reward-stat" style={{ textAlign: 'left' }}>
+                  <div className="reward-stat-value">{formatEC(user.stats.totalEarnedEC)}</div>
+                  <div className="reward-stat-label">📖 Reward Baca</div>
+                </div>
+                <div className="reward-stat" style={{ textAlign: 'right' }}>
+                  <div className="reward-stat-value">{formatEC(user.stats.totalReferralEC)}</div>
+                  <div className="reward-stat-label">👥 Komisi Referral</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Streak */}
         <div className="glass-card streak-card fade-in">
@@ -70,10 +96,10 @@ const Dashboard = ({ navigateTo }) => {
             <div className="stat-mini-value">{completed}</div>
             <div className="stat-mini-label">Buku Selesai</div>
           </div>
-          <div className="stat-mini">
-            <div className="stat-mini-icon">💰</div>
-            <div className="stat-mini-value">{formatCurrency(user.stats.totalReward)}</div>
-            <div className="stat-mini-label">Reward Baca</div>
+          <div className="stat-mini" onClick={() => navigateTo('reward')} style={{ cursor: 'pointer' }}>
+            <div className="stat-mini-icon">🪙</div>
+            <div className="stat-mini-value">{wallet.totalBalance}</div>
+            <div className="stat-mini-label">Saldo EC</div>
           </div>
           <div className="stat-mini">
             <div className="stat-mini-icon">👥</div>
@@ -119,7 +145,7 @@ const Dashboard = ({ navigateTo }) => {
             <div className="challenge-icon">🏆</div>
             <div className="challenge-info">
               <h4>Baca 4 Buku Bulan Ini</h4>
-              <p>Selesaikan untuk dapat bonus +Rp 5.000</p>
+              <p>Selesaikan untuk dapat bonus <span className="ec-inline">+50 EC</span></p>
               <div className="challenge-progress">
                 <div className="challenge-progress-fill" style={{ width: `${(completed / 4) * 100}%` }}></div>
               </div>

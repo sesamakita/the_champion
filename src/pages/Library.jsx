@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MOCK_BOOKS, GENRES } from '../data/mockData';
+import { MOCK_BOOKS, GENRES, MOCK_USER } from '../data/mockData';
 import { Search, ArrowLeft } from 'lucide-react';
 
 const Library = ({ navigateTo }) => {
@@ -35,8 +35,10 @@ const Library = ({ navigateTo }) => {
             <div key={book.id} className="book-card" onClick={() => navigateTo('book-detail')}>
               <div className="book-cover" style={{ background: `linear-gradient(135deg, ${book.color}22, ${book.color}44)` }}>
                 <span>{book.cover}</span>
+                {book.isPremium && <div className="book-premium-tag">PREMIUM</div>}
                 {book.progress === 100 && <span className="book-cover-badge">✅ Selesai</span>}
                 {book.progress > 0 && book.progress < 100 && <span className="book-cover-badge">{book.progress}%</span>}
+                {!MOCK_USER.package && book.isPremium && <div className="book-lock-overlay">🔒</div>}
               </div>
               <div className="book-info">
                 <div className="book-title">{book.title}</div>

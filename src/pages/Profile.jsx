@@ -1,8 +1,10 @@
-import { MOCK_USER, BADGES } from '../data/mockData';
-import { Settings, ChevronRight, Bell, Shield, HelpCircle, LogOut, Award } from 'lucide-react';
+import { MOCK_USER, PACKAGES, BADGES } from '../data/mockData';
+import { Settings, ChevronRight, Bell, Shield, HelpCircle, LogOut, Award, Crown, Sparkles } from 'lucide-react';
 
 const Profile = ({ navigateTo }) => {
   const user = MOCK_USER;
+  const isGuest = !user.package;
+  const activePkg = isGuest ? null : PACKAGES.find(p => p.id === user.package);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -16,6 +18,19 @@ const Profile = ({ navigateTo }) => {
           <div className="profile-avatar">{user.avatar}</div>
           <div className="profile-name">{user.name}</div>
           <div className="profile-level">⭐ {user.level}</div>
+
+          {/* Status Paket */}
+          {isGuest ? (
+            <div className="profile-package-badge guest" onClick={() => navigateTo('package-select')}>
+              <span>🆓 Mode Gratis</span>
+              <ChevronRight size={14} />
+            </div>
+          ) : (
+            <div className="profile-package-badge member" style={{ borderColor: activePkg.color, color: activePkg.color }}>
+              <span>{activePkg.emoji} Paket {activePkg.name}</span>
+            </div>
+          )}
+
           <div className="profile-stats">
             <div className="profile-stat">
               <div className="profile-stat-val">{user.stats.booksCompleted}</div>
@@ -31,6 +46,18 @@ const Profile = ({ navigateTo }) => {
             </div>
           </div>
         </div>
+
+        {/* Upgrade Banner (Guest Only) */}
+        {isGuest && (
+          <div className="glass-card profile-upgrade-card fade-in" onClick={() => navigateTo('package-select')}>
+            <div className="profile-upgrade-icon">👑</div>
+            <div className="profile-upgrade-info">
+              <strong>Upgrade ke Premium</strong>
+              <p>Buka semua fitur, dapatkan reward EC, dan mulai hasilkan uang dari referral!</p>
+            </div>
+            <ChevronRight size={18} style={{ color: 'var(--primary)', flexShrink: 0 }} />
+          </div>
+        )}
 
         {/* Badges */}
         <div className="fade-in">
@@ -63,9 +90,12 @@ const Profile = ({ navigateTo }) => {
               <span className="menu-item-label">Keamanan Akun</span>
               <ChevronRight size={16} className="menu-item-arrow" />
             </div>
-            <div className="menu-item">
+            <div className="menu-item" onClick={() => navigateTo('package-select')}>
               <Award size={18} className="menu-item-icon" />
-              <span className="menu-item-label">Paket Saya</span>
+              <span className="menu-item-label">
+                {isGuest ? 'Beli Paket' : 'Paket Saya'}
+              </span>
+              {isGuest && <span style={{ fontSize: '0.65rem', color: 'var(--primary)', fontWeight: 700, marginLeft: 'auto', marginRight: 8 }}>UPGRADE</span>}
               <ChevronRight size={16} className="menu-item-arrow" />
             </div>
             <div className="menu-item">

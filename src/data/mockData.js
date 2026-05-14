@@ -1,17 +1,53 @@
+// ===== EDU COIN (EC) SYSTEM =====
+// Exchange Rate: 1 EC = Rp 100
+
+export const EC_CONFIG = {
+  name: 'Edu Coin',
+  symbol: 'EC',
+  icon: '🪙',
+  exchangeRate: 100, // 1 EC = Rp 100
+  minWithdrawal: 500,
+  withdrawalFee: 25,
+  withdrawalFreeThreshold: 1000,
+  minTopUp: 100,
+  rewardExpiryDays: 180,
+  dailyEarnCap: 200,
+};
+
+export const EARNING_RULES = {
+  readReward: 40,
+  quizReward: 15,
+  quizPerfectBonus: 5,
+  streakReward: 20,
+  streakMaxPerMonth: 4,
+  bookPrice: 150, // buku satuan
+  referralRates: {
+    starter: 0.10,
+    reader: 0.12,
+    premium: 0.15,
+  },
+  minReadingMinutesPerPage: 0.5,
+};
+
 export const PACKAGES = [
   {
     id: 'starter',
     name: 'Starter',
     emoji: '📗',
     price: 99000,
+    priceEC: 990,
     bookCount: 10,
-    maxReadReward: 30000,
+    rewardPerBook: 40,
+    rewardPerQuiz: 15,
+    maxReadReward: 400,
+    maxQuizReward: 150,
+    maxTotalReward: 550,
     referralCommission: 0.10,
     color: '#00C896',
     colorSoft: 'rgba(0, 200, 150, 0.12)',
     features: [
       '10 buku digital pilihan',
-      'Reward baca hingga Rp 30.000',
+      'Reward baca 40 EC/buku',
       'Komisi referral 10%',
       'Akses komunitas pembaca',
     ],
@@ -21,15 +57,20 @@ export const PACKAGES = [
     name: 'Reader',
     emoji: '📘',
     price: 249000,
+    priceEC: 2490,
     bookCount: 25,
-    maxReadReward: 75000,
+    rewardPerBook: 40,
+    rewardPerQuiz: 15,
+    maxReadReward: 1000,
+    maxQuizReward: 375,
+    maxTotalReward: 1375,
     referralCommission: 0.12,
     color: '#4A90D9',
     colorSoft: 'rgba(74, 144, 217, 0.12)',
     popular: true,
     features: [
       '25 buku digital premium',
-      'Reward baca hingga Rp 75.000',
+      'Reward baca 40 EC/buku',
       'Komisi referral 12%',
       'Akses komunitas + tantangan',
       'Badge eksklusif',
@@ -40,14 +81,19 @@ export const PACKAGES = [
     name: 'Premium',
     emoji: '📕',
     price: 499000,
+    priceEC: 4990,
     bookCount: 50,
-    maxReadReward: 150000,
+    rewardPerBook: 40,
+    rewardPerQuiz: 15,
+    maxReadReward: 2000,
+    maxQuizReward: 750,
+    maxTotalReward: 2750,
     referralCommission: 0.15,
     color: '#F5A623',
     colorSoft: 'rgba(245, 166, 35, 0.12)',
     features: [
       '50 buku digital terlengkap',
-      'Reward baca hingga Rp 150.000',
+      'Reward baca 40 EC/buku',
       'Komisi referral 15%',
       'Akses semua fitur + prioritas',
       'Badge Champion eksklusif',
@@ -57,60 +103,71 @@ export const PACKAGES = [
 ];
 
 export const MOCK_BOOKS = [
-  { id: 1, title: 'Atomic Habits', author: 'James Clear', genre: 'Self-Help', cover: '📘', pages: 320, chapters: 20, rating: 4.8, progress: 65, rewardPerBook: 3000, color: '#4A90D9' },
-  { id: 2, title: 'Filosofi Teras', author: 'Henry Manampiring', genre: 'Filosofi', cover: '📙', pages: 280, chapters: 16, rating: 4.7, progress: 30, rewardPerBook: 3000, color: '#F5A623' },
-  { id: 3, title: 'Laut Bercerita', author: 'Leila S. Chudori', genre: 'Fiksi', cover: '📕', pages: 400, chapters: 24, rating: 4.9, progress: 0, rewardPerBook: 3000, color: '#E74C3C' },
-  { id: 4, title: 'Sapiens', author: 'Yuval N. Harari', genre: 'Sains', cover: '📗', pages: 464, chapters: 20, rating: 4.6, progress: 100, rewardPerBook: 3000, color: '#00C896' },
-  { id: 5, title: 'Rich Dad Poor Dad', author: 'Robert Kiyosaki', genre: 'Bisnis', cover: '📒', pages: 336, chapters: 10, rating: 4.5, progress: 0, rewardPerBook: 3000, color: '#9B59B6' },
-  { id: 6, title: 'Bumi', author: 'Tere Liye', genre: 'Fiksi', cover: '📓', pages: 440, chapters: 30, rating: 4.8, progress: 45, rewardPerBook: 3000, color: '#3498DB' },
-  { id: 7, title: 'The Psychology of Money', author: 'Morgan Housel', genre: 'Bisnis', cover: '📔', pages: 256, chapters: 20, rating: 4.7, progress: 0, rewardPerBook: 3000, color: '#1ABC9C' },
-  { id: 8, title: 'Madilog', author: 'Tan Malaka', genre: 'Filosofi', cover: '📕', pages: 340, chapters: 12, rating: 4.4, progress: 0, rewardPerBook: 3000, color: '#E67E22' },
-  { id: 9, title: 'Laskar Pelangi', author: 'Andrea Hirata', genre: 'Fiksi', cover: '📘', pages: 534, chapters: 34, rating: 4.9, progress: 0, rewardPerBook: 3000, color: '#2980B9' },
-  { id: 10, title: 'Ikigai', author: 'Héctor García', genre: 'Self-Help', cover: '📗', pages: 194, chapters: 11, rating: 4.6, progress: 80, rewardPerBook: 3000, color: '#27AE60' },
+  { id: 1, title: 'Atomic Habits', author: 'James Clear', genre: 'Self-Help', cover: '📘', pages: 320, chapters: 20, rating: 4.8, progress: 0, rewardEC: 40, color: '#4A90D9', isPremium: true },
+  { id: 2, title: 'Filosofi Teras', author: 'Henry Manampiring', genre: 'Filosofi', cover: '📙', pages: 280, chapters: 16, rating: 4.7, progress: 0, rewardEC: 40, color: '#F5A623', isPremium: true },
+  { id: 3, title: 'Laut Bercerita', author: 'Leila S. Chudori', genre: 'Fiksi', cover: '📕', pages: 400, chapters: 24, rating: 4.9, progress: 0, rewardEC: 40, color: '#E74C3C', isPremium: true },
+  { id: 4, title: 'Sapiens', author: 'Yuval N. Harari', genre: 'Sains', cover: '📗', pages: 464, chapters: 20, rating: 4.6, progress: 0, rewardEC: 40, color: '#00C896', isPremium: true },
+  { id: 5, title: 'Rich Dad Poor Dad', author: 'Robert Kiyosaki', genre: 'Bisnis', cover: '📒', pages: 336, chapters: 10, rating: 4.5, progress: 0, rewardEC: 40, color: '#9B59B6', isPremium: true },
+  { id: 6, title: 'Bumi', author: 'Tere Liye', genre: 'Fiksi', cover: '📓', pages: 440, chapters: 30, rating: 4.8, progress: 0, rewardEC: 40, color: '#3498DB', isPremium: true },
+  { id: 7, title: 'The Psychology of Money', author: 'Morgan Housel', genre: 'Bisnis', cover: '📔', pages: 256, chapters: 20, rating: 4.7, progress: 0, rewardEC: 40, color: '#1ABC9C', isPremium: true },
+  { id: 8, title: 'Panduan Membaca', author: 'Team Champion', genre: 'Pendidikan', cover: '📖', pages: 50, chapters: 5, rating: 5.0, progress: 0, rewardEC: 0, color: '#95a5a6', isPremium: false },
+  { id: 9, title: 'Tips Menabung EC', author: 'Finance Pro', genre: 'Bisnis', cover: '💰', pages: 30, chapters: 3, rating: 4.9, progress: 0, rewardEC: 0, color: '#f1c40f', isPremium: false },
+  { id: 10, title: 'Ikigai', author: 'Héctor García', genre: 'Self-Help', cover: '📗', pages: 194, chapters: 11, rating: 4.6, progress: 0, rewardEC: 40, color: '#27AE60', isPremium: true },
 ];
+
+export const MOCK_WALLET = {
+  earnedBalance: 450,
+  topUpBalance: 0,
+  totalBalance: 450,
+  lifetimeEarned: 1230,
+  lifetimeSpent: 780,
+  lifetimeWithdrawn: 0,
+};
 
 export const MOCK_USER = {
   name: 'Budi Santoso',
   email: 'budi@email.com',
   phone: '081234567890',
   avatar: '👤',
-  level: 'Pembaca Aktif',
-  package: 'reader',
+  level: 'Pembaca Baru',
+  package: null, // Start as Guest
   referralCode: 'BUDI2024',
   joinDate: '2024-11-15',
+  wallet: { ...MOCK_WALLET, totalBalance: 0, earnedBalance: 0 },
   stats: {
-    booksCompleted: 4,
-    booksInProgress: 3,
-    totalPagesRead: 1280,
-    currentStreak: 7,
-    longestStreak: 14,
-    totalReadingMinutes: 2400,
-    totalReward: 45000,
-    totalReferralIncome: 89640,
-    referralCount: 6,
+    booksCompleted: 0,
+    booksInProgress: 0,
+    totalPagesRead: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    totalReadingMinutes: 0,
+    totalEarnedEC: 0,
+    totalReferralEC: 0,
+    referralCount: 0,
   },
 };
 
-export const MOCK_REWARDS = [
-  { id: 1, type: 'read', label: 'Selesai baca: Sapiens', amount: 3000, date: '2024-12-28' },
-  { id: 2, type: 'quiz', label: 'Quiz: Sapiens (5/5)', amount: 2500, date: '2024-12-28' },
-  { id: 3, type: 'referral', label: 'Referral: Ani (Paket Starter)', amount: 9900, date: '2024-12-27' },
-  { id: 4, type: 'read', label: 'Selesai baca: Atomic Habits (bab 13)', amount: 500, date: '2024-12-26' },
-  { id: 5, type: 'streak', label: 'Streak 7 hari berturut', amount: 2000, date: '2024-12-26' },
-  { id: 6, type: 'referral', label: 'Referral: Cici (Paket Reader)', amount: 29880, date: '2024-12-25' },
-  { id: 7, type: 'read', label: 'Selesai baca: Ikigai (bab 8)', amount: 500, date: '2024-12-24' },
-  { id: 8, type: 'challenge', label: 'Tantangan: Baca 4 buku Desember', amount: 5000, date: '2024-12-23' },
-  { id: 9, type: 'referral', label: 'Referral: Doni (Paket Reader)', amount: 29880, date: '2024-12-22' },
-  { id: 10, type: 'read', label: 'Selesai baca: Filosofi Teras (bab 5)', amount: 500, date: '2024-12-21' },
+export const MOCK_TRANSACTIONS = [
+  { id: 1, type: 'EARN_READ', label: 'Selesai baca: Sapiens', amount: 40, date: '2024-12-28', status: 'COMPLETED' },
+  { id: 2, type: 'EARN_QUIZ_PERFECT', label: 'Quiz Perfect: Sapiens (5/5)', amount: 20, date: '2024-12-28', status: 'COMPLETED' },
+  { id: 3, type: 'EARN_REF', label: 'Referral: Ani (Paket Starter)', amount: 99, date: '2024-12-27', status: 'COMPLETED' },
+  { id: 4, type: 'EARN_READ', label: 'Selesai baca: Atomic Habits (bab 13)', amount: 5, date: '2024-12-26', status: 'COMPLETED' },
+  { id: 5, type: 'EARN_STREAK', label: 'Streak 7 hari berturut', amount: 20, date: '2024-12-26', status: 'COMPLETED' },
+  { id: 6, type: 'EARN_REF', label: 'Referral: Cici (Paket Reader)', amount: 299, date: '2024-12-25', status: 'COMPLETED' },
+  { id: 7, type: 'EARN_READ', label: 'Selesai baca: Ikigai (bab 8)', amount: 5, date: '2024-12-24', status: 'COMPLETED' },
+  { id: 8, type: 'EARN_BONUS', label: 'Tantangan: Baca 4 buku Desember', amount: 50, date: '2024-12-23', status: 'COMPLETED' },
+  { id: 9, type: 'EARN_REF', label: 'Referral: Doni (Paket Reader)', amount: 299, date: '2024-12-22', status: 'COMPLETED' },
+  { id: 10, type: 'SPEND_BOOK', label: 'Beli buku: The Psychology of Money', amount: -150, date: '2024-12-21', status: 'COMPLETED' },
+  { id: 11, type: 'EARN_READ', label: 'Selesai baca: Filosofi Teras (bab 5)', amount: 5, date: '2024-12-21', status: 'COMPLETED' },
 ];
 
 export const MOCK_REFERRALS = [
-  { id: 1, name: 'Ani Wijaya', package: 'Starter', date: '2024-12-27', commission: 9900, active: true },
-  { id: 2, name: 'Cici Lestari', package: 'Reader', date: '2024-12-25', commission: 29880, active: true },
-  { id: 3, name: 'Doni Pratama', package: 'Reader', date: '2024-12-22', commission: 29880, active: true },
-  { id: 4, name: 'Eka Putri', package: 'Starter', date: '2024-12-18', commission: 9900, active: true },
-  { id: 5, name: 'Fajar Nugroho', package: 'Premium', date: '2024-12-15', commission: 59880, active: false },
-  { id: 6, name: 'Gita Sari', package: 'Starter', date: '2024-12-10', commission: 9900, active: true },
+  { id: 1, name: 'Ani Wijaya', package: 'Starter', date: '2024-12-27', commissionEC: 99, active: true },
+  { id: 2, name: 'Cici Lestari', package: 'Reader', date: '2024-12-25', commissionEC: 299, active: true },
+  { id: 3, name: 'Doni Pratama', package: 'Reader', date: '2024-12-22', commissionEC: 299, active: true },
+  { id: 4, name: 'Eka Putri', package: 'Starter', date: '2024-12-18', commissionEC: 99, active: true },
+  { id: 5, name: 'Fajar Nugroho', package: 'Premium', date: '2024-12-15', commissionEC: 599, active: false },
+  { id: 6, name: 'Gita Sari', package: 'Starter', date: '2024-12-10', commissionEC: 99, active: true },
 ];
 
 export const MOCK_QUIZ = [
@@ -134,6 +191,41 @@ export const BADGES = [
   { id: 8, name: 'The Champion', icon: '🏆', description: 'Selesaikan semua buku di paket', unlocked: false },
 ];
 
+export const GIFTS_CATALOG = [
+  { id: 1, name: 'Bookmark Eksklusif', icon: '🔖', priceEC: 100, stock: 50 },
+  { id: 2, name: 'Voucher Shopee 25K', icon: '🛍️', priceEC: 300, stock: 20 },
+  { id: 3, name: 'Tumblr The Champion', icon: '🥤', priceEC: 500, stock: 15 },
+  { id: 4, name: 'Earphone Wireless', icon: '🎧', priceEC: 1500, stock: 5 },
+];
+
+// ===== FORMATTERS =====
+
+export const formatEC = (amount) => {
+  return `${Math.abs(amount).toLocaleString('id-ID')} EC`;
+};
+
 export const formatCurrency = (amount) => {
   return 'Rp ' + amount.toLocaleString('id-ID');
+};
+
+export const ecToRupiah = (ec) => {
+  return ec * EC_CONFIG.exchangeRate;
+};
+
+export const rupiahToEC = (rupiah) => {
+  return Math.floor(rupiah / EC_CONFIG.exchangeRate);
+};
+
+// Transaction type icons & colors
+export const TX_META = {
+  EARN_READ: { icon: '📖', color: 'var(--accent)', label: 'Baca' },
+  EARN_QUIZ: { icon: '🧠', color: '#9B59B6', label: 'Quiz' },
+  EARN_QUIZ_PERFECT: { icon: '🧠', color: '#9B59B6', label: 'Quiz Perfect' },
+  EARN_REF: { icon: '👥', color: 'var(--secondary)', label: 'Referral' },
+  EARN_STREAK: { icon: '🔥', color: 'var(--primary)', label: 'Streak' },
+  EARN_BONUS: { icon: '🎯', color: '#E74C3C', label: 'Bonus' },
+  SPEND_BOOK: { icon: '📚', color: '#E67E22', label: 'Beli Buku' },
+  SPEND_GIFT: { icon: '🎁', color: '#E91E63', label: 'Hadiah' },
+  WITHDRAW: { icon: '🏧', color: '#607D8B', label: 'Penarikan' },
+  TOPUP: { icon: '💎', color: '#00BCD4', label: 'Top Up' },
 };

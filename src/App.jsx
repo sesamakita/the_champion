@@ -10,9 +10,13 @@ import Referral from './pages/Referral';
 import BookDetail from './pages/BookDetail';
 import PackageSelect from './pages/PackageSelect';
 import SplashScreen from './SplashScreen';
+import Onboarding from './pages/Onboarding';
+import Auth from './pages/Auth';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('the_champion_onboarded'));
+  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('the_champion_logged_in') === 'true');
   const [view, setView] = useState('dashboard');
 
   useEffect(() => {
@@ -55,6 +59,20 @@ function App() {
 
   if (showSplash) {
     return <SplashScreen version="1.0.0" message="Mempersiapkan pengalaman membaca..." />;
+  }
+
+  if (showOnboarding) {
+    return <Onboarding onComplete={() => {
+      localStorage.setItem('the_champion_onboarded', 'true');
+      setShowOnboarding(false);
+    }} />;
+  }
+
+  if (!isLoggedIn) {
+    return <Auth onLogin={() => {
+      localStorage.setItem('the_champion_logged_in', 'true');
+      setIsLoggedIn(true);
+    }} />;
   }
 
   const renderContent = () => {
