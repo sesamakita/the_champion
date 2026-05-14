@@ -13,6 +13,7 @@ export const STORAGE_KEYS = {
     SELECTED_PACKAGE: `${PREFIX}selected_package`,
     READING_PROGRESS: `${PREFIX}reading_progress`,
     REWARD_HISTORY: `${PREFIX}reward_history`,
+    CLAIMED_REWARDS: `${PREFIX}claimed_rewards`,
     REFERRAL_CODE: `${PREFIX}referral_code`,
     STREAK_DATA: `${PREFIX}streak_data`,
     THEME_MODE: `${PREFIX}theme_mode`,

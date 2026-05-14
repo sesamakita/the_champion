@@ -4,6 +4,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import useReadingSession from '../hooks/useReadingSession';
+import useWallet from '../hooks/useWallet';
+import StorageService, { STORAGE_KEYS } from '../services/StorageService';
 
 // Setup worker untuk react-pdf menggunakan UNPKG yang lebih andal untuk versi spesifik
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -16,6 +18,29 @@ const BookReader = ({ book, navigateTo, localFile }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [scale, setScale] = useState(1.0);
   const [showSessionStats, setShowSessionStats] = useState(false);
+  const { earnReadingReward } = useWallet();
+  const [isClaimed, setIsClaimed] = useState(false);
+
+  // Check if already claimed
+  useEffect(() => {
+    const claimed = StorageService.get(STORAGE_KEYS.CLAIMED_REWARDS, []);
+    if (claimed.includes(book.id)) {
+      setIsClaimed(true);
+    }
+  }, [book.id]);
+
+  const handleClaim = () => {
+    if (isClaimed) return;
+    
+    earnReadingReward(book);
+    
+    const claimed = StorageService.get(STORAGE_KEYS.CLAIMED_REWARDS, []);
+    StorageService.save(STORAGE_KEYS.CLAIMED_REWARDS, [...claimed, book.id]);
+    setIsClaimed(true);
+    
+    // Auto close stats and show success
+    setTimeout(() => setShowSessionStats(false), 2000);
+  };
 
   // Gunakan file lokal jika ada, jika tidak gunakan placeholder
   const pdfSource = localFile || book.pdfUrl || null;
@@ -142,9 +167,19 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           </div>
         </div>
         {!isLocalFile && (
-          <div className="session-reward-preview">
-            <span>🪙</span>
-            <span>{stats.canClaimReward ? `+${book.rewardEC} EC siap diklaim!` : `Baca ${Math.ceil(stats.totalPages * 0.7) - stats.totalValidPages} hlm lagi untuk reward`}</span>
+          <div className="session-reward-preview" style={{ flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span>🪙</span>
+              <span>{isClaimed ? 'Reward sudah diklaim ✓' : (stats.canClaimReward ? `+${book.rewardEC} EC siap diklaim!` : `Baca ${Math.ceil(stats.totalPages * 0.7) - stats.totalValidPages} hlm lagi untuk reward`)}</span>
+            </div>
+            {stats.canClaimReward && !isClaimed && (
+              <button 
+                className="claim-reward-btn fade-in"
+                onClick={(e) => { e.stopPropagation(); handleClaim(); }}
+              >
+                Klaim Sekarang
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -490,6 +525,26 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           font-size: 0.7rem;
           font-weight: 700;
           color: var(--text-secondary);
+        }
+        .claim-reward-btn {
+          width: 100%;
+          padding: 10px;
+          border: none;
+          border-radius: 10px;
+          background: linear-gradient(135deg, var(--primary), #10B981);
+          color: #fff;
+          font-weight: 800;
+          font-size: 0.8rem;
+          cursor: pointer;
+          box-shadow: 0 4px 15px rgba(0,200,150,0.3);
+          animation: pulseClaim 2s infinite;
+          transition: transform 0.2s;
+        }
+        .claim-reward-btn:active { transform: scale(0.95); }
+        @keyframes pulseClaim {
+          0% { box-shadow: 0 4px 15px rgba(0,200,150,0.3); }
+          50% { box-shadow: 0 4px 25px rgba(0,200,150,0.5); }
+          100% { box-shadow: 0 4px 15px rgba(0,200,150,0.3); }
         }
       `}} />
     </div>

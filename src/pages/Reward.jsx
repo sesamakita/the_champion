@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { MOCK_USER, MOCK_TRANSACTIONS, EC_CONFIG, GIFTS_CATALOG, PACKAGES, formatEC, TX_META } from '../data/mockData';
-import { ArrowLeft, Download, ShoppingBag, ArrowUpRight, ArrowDownLeft, Gift, ChevronRight, Lock, Sparkles } from 'lucide-react';
+import { MOCK_USER, EC_CONFIG, GIFTS_CATALOG, formatEC, TX_META } from '../data/mockData';
+import { ArrowLeft, ShoppingBag, ArrowUpRight, ArrowDownLeft, Gift, ChevronRight, Lock, Sparkles } from 'lucide-react';
+import { useWallet } from '../hooks/useWallet';
 
 const Reward = ({ navigateTo }) => {
   const [tab, setTab] = useState('overview');
-  const user = MOCK_USER;
-  const wallet = user.wallet;
+  const { wallet, transactions } = useWallet();
+  const user = MOCK_USER; // Still needed for profile info
   const isGuest = !user.package;
 
   return (

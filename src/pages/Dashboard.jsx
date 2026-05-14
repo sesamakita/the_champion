@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { MOCK_USER, MOCK_BOOKS, EC_CONFIG, formatEC } from '../data/mockData';
 import { BookOpen, Flame, Target, TrendingUp, ChevronRight, Wallet, Play, Clock } from 'lucide-react';
 import { getAllReadingProgress } from '../hooks/useReadingSession';
+import { useWallet } from '../hooks/useWallet';
 
 const Dashboard = ({ navigateTo }) => {
+  const { wallet } = useWallet();
   const user = MOCK_USER;
-  const wallet = user.wallet;
   const reading = MOCK_BOOKS.filter(b => b.progress > 0 && b.progress < 100);
   const completed = MOCK_BOOKS.filter(b => b.progress === 100).length;
   const days = ['S','S','R','K','J','S','M'];

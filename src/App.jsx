@@ -13,7 +13,7 @@ import BookReader from './pages/BookReader';
 import SplashScreen from './SplashScreen';
 import Onboarding from './pages/Onboarding';
 import Auth from './pages/Auth';
-import { MOCK_BOOKS } from './data/mockData';
+import { MOCK_BOOKS, MOCK_USER } from './data/mockData';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -58,6 +58,13 @@ function App() {
 
   useEffect(() => { window.scrollTo(0, 0); }, [view]);
 
+  // Initial user setup
+  useEffect(() => {
+    if (isLoggedIn && !localStorage.getItem('champion_current_user')) {
+      localStorage.setItem('champion_current_user', JSON.stringify(MOCK_USER));
+    }
+  }, [isLoggedIn]);
+
   const navigateTo = (page, data = null) => {
     setView(page);
     setViewData(data);
@@ -75,8 +82,10 @@ function App() {
   }
 
   if (!isLoggedIn) {
-    return <Auth onLogin={() => {
+    return <Auth onLogin={(user) => {
+      const userData = user || MOCK_USER;
       localStorage.setItem('the_champion_logged_in', 'true');
+      localStorage.setItem('champion_current_user', JSON.stringify(userData));
       setIsLoggedIn(true);
     }} />;
   }
