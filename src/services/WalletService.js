@@ -103,6 +103,7 @@ const WalletService = {
      * Buy a membership package
      */
     buyPackage(packageId) {
+        console.log('DEBUG: PACKAGES in WalletService:', PACKAGES);
         const pkg = PACKAGES.find(p => p.id === packageId);
         if (!pkg) return { success: false, message: 'Paket tidak ditemukan' };
 
