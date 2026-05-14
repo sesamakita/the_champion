@@ -46,7 +46,7 @@ const TopUp = ({ navigateTo }) => {
 
   if (step === 'success') {
     return (
-      <div className="page-container flex-center fade-in bg-glow">
+      <div className="page-container flex-center fade-in bg-glow" style={{ padding: '40px 20px', justifyContent: 'center', height: '100%' }}>
         <div className="success-lottie">
           <div className="confetti-wrap">
             {[...Array(12)].map((_, i) => <div key={i} className={`confetti c${i}`}></div>)}
@@ -60,7 +60,7 @@ const TopUp = ({ navigateTo }) => {
           Saldo <strong>{selectedOption.ec} EC</strong> telah ditambahkan ke wallet Anda via <strong>{selectedMethod.name}</strong>.
         </p>
         
-        <div className="glass-card success-detail">
+        <div className="glass-card success-detail" style={{ width: '100%', maxWidth: '320px' }}>
           <div className="detail-row">
             <span>ID Transaksi</span>
             <span>#CHMP-{Date.now().toString().slice(-6)}</span>
@@ -71,7 +71,7 @@ const TopUp = ({ navigateTo }) => {
           </div>
         </div>
 
-        <button className="primary-btn pulse-anim" style={{ width: '80%', marginTop: '30px' }} onClick={() => navigateTo('reward')}>
+        <button className="primary-btn pulse-anim" style={{ width: '100%', maxWidth: '320px', marginTop: '30px' }} onClick={() => navigateTo('reward')}>
           Cek Saldo Wallet
         </button>
       </div>

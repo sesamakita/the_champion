@@ -92,16 +92,54 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
 }
 .main-scroll::-webkit-scrollbar { display: none; }
 
+/* ===== UTILS ===== */
+.flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.bg-glow { background: radial-gradient(circle at top, var(--primary-glow), transparent); }
+
+.primary-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background: var(--primary);
+    color: #000;
+    font-weight: 800;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 24px var(--primary-glow);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.primary-btn:active { transform: scale(0.96); opacity: 0.9; }
+.primary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.secondary-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.secondary-btn:active { transform: scale(0.96); }
+
 /* ===== REWARD SUMMARY CARD ===== */
 .reward-hero { 
     position: relative; 
     border-radius: var(--radius-lg); 
     overflow: hidden; 
-    padding: var(--space-xl); 
     background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
     box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
     display: flex;
     flex-direction: column;
+    padding: var(--space-xl);
     min-height: 200px;
 }
 .reward-hero-bg { 
