@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MOCK_USER, MOCK_BOOKS, EC_CONFIG, formatEC } from '../data/mockData';
-import { BookOpen, Flame, Target, TrendingUp, ChevronRight, Wallet, Play, Clock } from 'lucide-react';
+import { BookOpen, Flame, Target, TrendingUp, ChevronRight, Wallet, Play, Clock, Coins, Users } from 'lucide-react';
 import { getAllReadingProgress } from '../hooks/useReadingSession';
 import { useWallet } from '../hooks/useWallet';
 
@@ -9,7 +9,7 @@ const Dashboard = ({ navigateTo }) => {
   const user = MOCK_USER;
   const reading = MOCK_BOOKS.filter(b => b.progress > 0 && b.progress < 100);
   const completed = MOCK_BOOKS.filter(b => b.progress === 100).length;
-  const days = ['S','S','R','K','J','S','M'];
+  const days = ['S', 'S', 'R', 'K', 'J', 'S', 'M'];
 
   // === PERSISTED READING PROGRESS ===
   const [continueBooks, setContinueBooks] = useState([]);
@@ -59,24 +59,38 @@ const Dashboard = ({ navigateTo }) => {
       <div className="main-scroll hide-scrollbar">
         {/* Conditional Header: Wallet vs Upgrade Banner */}
         {!user.package ? (
-          <div className="upgrade-banner fade-in" onClick={() => navigateTo('package-select')}>
-            <div className="upgrade-banner-content">
-              <div className="upgrade-badge">MODE GRATIS</div>
-              <h2 className="upgrade-title">Buka Potensi Reward Kamu! 🚀</h2>
-              <p className="upgrade-desc">Kamu bisa menghasilkan hingga <strong>2.750 EC</strong> dengan upgrade ke paket Premium.</p>
-              <div className="upgrade-stats">
-                <div className="upgrade-stat-item">
-                  <span className="val">🪙 40 EC</span>
-                  <span className="lbl">Per Buku</span>
+          <div className="card-primary fade-in" onClick={() => navigateTo('package-select')}>
+            <div className="card-primary-bg"></div>
+            <div className="frame">
+              <div className="text-wrapper">MODE GRATIS</div>
+            </div>
+            <div className="div">
+              <div className="text-wrapper-2">Buka Potensi Reward Kamu !</div>
+              <p className="p">
+                Kamu bisa menghasilkan hingga <strong>2.750 EC</strong> dengan upgrade ke paket Premium.
+              </p>
+            </div>
+            <div className="frame-2">
+              <div className="frame-3">
+                <div className="frame-4">
+                  <div className="frame-5">
+                    <div className="img"><Coins size={20} color="var(--primary)" /></div>
+                    <div className="text-wrapper-3">40 EC</div>
+                  </div>
+                  <div className="text-wrapper-4">PER BUKU</div>
                 </div>
-                <div className="upgrade-stat-item">
-                  <span className="val">👥 15%</span>
-                  <span className="lbl">Komisi</span>
+                <div className="frame-6">
+                  <div className="frame-7">
+                    <div className="img"><Users size={20} color="var(--primary)" /></div>
+                    <div className="text-wrapper-3">15%</div>
+                  </div>
+                  <div className="text-wrapper-5">KOMISI</div>
                 </div>
               </div>
-              <button className="upgrade-action-btn">Pilih Paket Sekarang</button>
+              <div className="div-wrapper">
+                <div className="text-wrapper-6">Pilih Paket Sekarang</div>
+              </div>
             </div>
-            <div className="upgrade-banner-bg"></div>
           </div>
         ) : (
           <div className="reward-hero fade-in" onClick={() => navigateTo('reward')} style={{ cursor: 'pointer' }}>
@@ -142,7 +156,7 @@ const Dashboard = ({ navigateTo }) => {
           <div className="fade-in">
             <div className="section-header">
               <div className="section-title">📖 Lanjutkan Membaca</div>
-              <div className="section-link" onClick={() => navigateTo('library')}>Semua <ChevronRight size={14} style={{verticalAlign:'middle'}} /></div>
+              <div className="section-link" onClick={() => navigateTo('library')}>Semua <ChevronRight size={14} style={{ verticalAlign: 'middle' }} /></div>
             </div>
             {continueBooks.slice(0, 2).map(book => (
               <div key={book.id} className="glass-card continue-reading-card fade-in" onClick={() => navigateTo('book-detail', { bookId: book.id })}>
@@ -179,7 +193,7 @@ const Dashboard = ({ navigateTo }) => {
           <div className="fade-in">
             <div className="section-header">
               <div className="section-title">📖 Sedang Dibaca</div>
-              <div className="section-link" onClick={() => navigateTo('library')}>Semua <ChevronRight size={14} style={{verticalAlign:'middle'}} /></div>
+              <div className="section-link" onClick={() => navigateTo('library')}>Semua <ChevronRight size={14} style={{ verticalAlign: 'middle' }} /></div>
             </div>
             <div className="books-scroll hide-scrollbar">
               {reading.map(book => (

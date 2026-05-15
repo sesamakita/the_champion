@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 :root {
     --primary: #F5A623;
@@ -24,8 +24,8 @@
     --shadow-card: 0 4px 20px rgba(0,0,0,0.05);
     --shadow-glow: 0 10px 30px rgba(245,166,35,0.08);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --font-main: 'Cabin', sans-serif;
-    --font-body: 'Cabin', sans-serif;
+    --font-main: 'Montserrat', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
     font-family: var(--font-body);
 }
 
@@ -84,7 +84,7 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
 .main-scroll { 
     flex: 1; 
     overflow-y: auto; 
-    padding: var(--space-sm) var(--space-lg) 100px; /* Reduced from 180px to be more reasonable */
+    padding: var(--space-sm) var(--space-lg) 160px;
     display: flex; 
     flex-direction: column; 
     gap: var(--space-lg); 
@@ -474,123 +474,224 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
 .ec-reward-badge-sym { font-size: 0.75rem; font-weight: 700; color: var(--primary); }
 .ec-reward-info-bonus { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
 
-/* ===== FREEMIUM / UPGRADE BANNER ===== */
-.upgrade-banner {
-  margin: 0; 
-  padding: 24px 20px;
-  border-radius: var(--radius-lg);
+/* ===== CARD PRIMARY (FREEMIUM / UPGRADE) ===== */
+.card-primary {
+  align-items: flex-start;
+  background: linear-gradient(
+    152deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(102, 102, 102, 1) 83%
+  );
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 24px;
   position: relative;
-  /* overflow: hidden; -- Dihapus agar tidak memotong isi jika ada shadow atau elemen dekorasi */
-  background: linear-gradient(135deg, #1e1e3f 0%, #0d0d2b 100%);
-  border: 1px solid rgba(245, 166, 35, 0.3);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   transition: var(--transition);
-  
-  /* Perbaikan Utama: */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Mulai dari atas, bukan tengah */
-  align-items: flex-start;
-  height: auto;       /* Pastikan tinggi mengikuti isi */
-  min-height: auto;   /* Hapus batasan tinggi minimum */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  height: auto;
+  min-height: auto;
 }
 
-.upgrade-banner:active { transform: scale(0.98); }
-
-.upgrade-banner-content {
-  position: relative;
-  z-index: 5;
-  width: 100%;
-  text-align: left;
+.card-primary:active {
+  transform: scale(0.98);
 }
 
-.upgrade-badge {
-  display: inline-block;
+.card-primary .frame {
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 10px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  justify-content: center;
   padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
+  position: relative;
 }
 
-.upgrade-title {
-  font-size: 1.2rem; /* Reduced from 1.4rem */
-  font-weight: 800;
-  color: #fff;
+.card-primary .text-wrapper {
+  color: #000000;
   font-family: var(--font-main);
-  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: normal;
+  position: relative;
+  width: fit-content;
+}
+
+.card-primary .div {
+  align-items: flex-start;
+  align-self: stretch;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  width: 100%;
+}
+
+.card-primary .text-wrapper-2 {
+  align-self: stretch;
+  color: #ffffff;
+  font-family: var(--font-main);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
   line-height: 1.2;
+  position: relative;
 }
 
-.upgrade-desc {
-  font-size: 0.75rem; /* Reduced for space */
+.card-primary .p {
+  align-self: stretch;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: var(--space-md);
-  line-height: 1.4;
-}
-
-.upgrade-stats {
-  display: flex;
-  flex-wrap: wrap; /* Prevent overflow */
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-
-.upgrade-desc {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: var(--space-lg);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
   line-height: 1.5;
+  position: relative;
 }
 
-.upgrade-stats {
+.card-primary .frame-2 {
+  align-items: flex-start;
+  align-self: stretch;
   display: flex;
-  gap: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  width: 100%;
 }
 
-.upgrade-stat-item {
+.card-primary .frame-3 {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 24px;
+  justify-content: center;
+  position: relative;
+}
+
+.card-primary .frame-4 {
+  align-items: center;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  position: relative;
 }
 
-.upgrade-stat-item .val {
-  font-size: 1.1rem;
-  font-weight: 800;
+.card-primary .frame-5 {
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  position: relative;
+  width: 100%;
+}
+
+.card-primary .img {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.card-primary .text-wrapper-3 {
   color: var(--primary);
   font-family: var(--font-main);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
 }
 
-.upgrade-stat-item .lbl {
-  font-size: 0.65rem;
+.card-primary .text-wrapper-4 {
+  align-self: stretch;
   color: rgba(255, 255, 255, 0.5);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.upgrade-action-btn {
-  width: 100%;
-  padding: 14px;
-  background: var(--primary);
-  color: #0d0d2b;
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  font-weight: 700;
   font-family: var(--font-main);
-  box-shadow: 0 4px 20px rgba(245, 166, 35, 0.3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: normal;
+  margin-top: 2px;
+  position: relative;
+  text-align: center;
 }
 
-.upgrade-banner-bg {
+.card-primary .frame-6 {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.card-primary .frame-7 {
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  position: relative;
+  width: 100%;
+}
+
+.card-primary .text-wrapper-5 {
+  align-self: stretch;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-main);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: normal;
+  margin-top: 2px;
+  position: relative;
+  text-align: center;
+}
+
+.card-primary .div-wrapper {
+  align-items: center;
+  align-self: stretch;
+  background-color: var(--primary);
+  border-radius: 12px;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  justify-content: center;
+  padding: 14px 10px;
+  position: relative;
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(245, 166, 35, 0.2);
+}
+
+.card-primary .text-wrapper-6 {
+  color: #000000;
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+  width: fit-content;
+}
+
+.card-primary-bg {
   position: absolute;
   top: -50px;
   right: -50px;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.1) 0%, transparent 70%);
   z-index: 1;
 }
 
@@ -1430,7 +1531,7 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  font-family: 'Cabin', sans-serif;
+  font-family: var(--font-body);
 }
 
 .reader-header {
