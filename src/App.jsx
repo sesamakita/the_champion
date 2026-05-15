@@ -14,7 +14,7 @@ import SplashScreen from './SplashScreen';
 import Onboarding from './pages/Onboarding';
 import Auth from './pages/Auth';
 import TopUp from './pages/TopUp';
-import { MOCK_BOOKS, MOCK_USER } from './data/mockData';
+import { MOCK_BOOKS, DEMO_ACCOUNTS } from './data/mockData';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -22,6 +22,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('the_champion_logged_in') === 'true');
   const [view, setView] = useState('dashboard');
   const [viewData, setViewData] = useState(null);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 2800);
@@ -59,16 +60,36 @@ function App() {
 
   useEffect(() => { window.scrollTo(0, 0); }, [view]);
 
-  // Initial user setup
+  // Initial user setup — if logged in but no user data, set default
   useEffect(() => {
     if (isLoggedIn && !localStorage.getItem('champion_current_user')) {
-      localStorage.setItem('champion_current_user', JSON.stringify(MOCK_USER));
+      localStorage.setItem('champion_current_user', JSON.stringify(DEMO_ACCOUNTS[0].profile));
     }
   }, [isLoggedIn]);
+
+  // Toast auto-dismiss
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+  };
 
   const navigateTo = (page, data = null) => {
     setView(page);
     setViewData(data);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('the_champion_logged_in');
+    localStorage.removeItem('champion_current_user');
+    localStorage.removeItem('champion_reward_history');
+    setIsLoggedIn(false);
+    setView('dashboard');
   };
 
   if (showSplash) {
@@ -83,10 +104,17 @@ function App() {
   }
 
   if (!isLoggedIn) {
-    return <Auth onLogin={(user) => {
-      const userData = user || MOCK_USER;
+    return <Auth onLogin={(userProfile, walletData, txData) => {
       localStorage.setItem('the_champion_logged_in', 'true');
-      localStorage.setItem('champion_current_user', JSON.stringify(userData));
+      localStorage.setItem('champion_current_user', JSON.stringify(userProfile));
+      // Store wallet data if provided
+      if (walletData) {
+        const fullUser = { ...userProfile, wallet: walletData };
+        localStorage.setItem('champion_current_user', JSON.stringify(fullUser));
+      }
+      if (txData && txData.length > 0) {
+        localStorage.setItem('champion_reward_history', JSON.stringify(txData));
+      }
       setIsLoggedIn(true);
     }} />;
   }
@@ -95,7 +123,7 @@ function App() {
     switch (view) {
       case 'library': return <Library navigateTo={navigateTo} />;
       case 'reward': return <Reward navigateTo={navigateTo} />;
-      case 'profile': return <Profile navigateTo={navigateTo} />;
+      case 'profile': return <Profile navigateTo={navigateTo} onLogout={handleLogout} showToast={showToast} />;
       case 'referral': return <Referral navigateTo={navigateTo} />;
       case 'book-detail': 
         const bookId = viewData?.bookId || 1;
@@ -131,6 +159,12 @@ function App() {
             <User size={20} /><span className="nav-text">Profil</span>
           </div>
         </nav>
+      )}
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`toast-notification ${toast.type} fade-in`}>
+          <span>{toast.message}</span>
+        </div>
       )}
     </div>
   );

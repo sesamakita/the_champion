@@ -1,10 +1,17 @@
-import { MOCK_USER, PACKAGES, BADGES } from '../data/mockData';
-import { Settings, ChevronRight, Bell, Shield, HelpCircle, LogOut, Award, Crown, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { MOCK_USER, PACKAGES, BADGES, getActiveUser } from '../data/mockData';
+import { Settings, ChevronRight, Bell, Shield, HelpCircle, LogOut, Award, Crown, Sparkles, AlertTriangle } from 'lucide-react';
 
-const Profile = ({ navigateTo }) => {
-  const user = MOCK_USER;
+const Profile = ({ navigateTo, onLogout, showToast }) => {
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const user = getActiveUser();
   const isGuest = !user.package;
   const activePkg = isGuest ? null : PACKAGES.find(p => p.id === user.package);
+
+  const handleLogout = () => {
+    setShowLogoutConfirm(false);
+    if (onLogout) onLogout();
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -103,14 +110,45 @@ const Profile = ({ navigateTo }) => {
               <span className="menu-item-label">Bantuan & FAQ</span>
               <ChevronRight size={16} className="menu-item-arrow" />
             </div>
-            <div className="menu-item danger">
+            <div className="menu-item danger" onClick={() => setShowLogoutConfirm(true)}>
               <LogOut size={18} className="menu-item-icon" />
               <span className="menu-item-label">Keluar</span>
               <ChevronRight size={16} className="menu-item-arrow" />
             </div>
           </div>
         </div>
+
+        {/* Account Info */}
+        <div className="fade-in" style={{ textAlign: 'center', padding: '16px 0 8px' }}>
+          <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+            Login sebagai <strong>{user.email || 'user'}</strong>
+          </p>
+          <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: 4 }}>
+            The Champion v1.0.0
+          </p>
+        </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="modal-overlay fade-in" onClick={() => setShowLogoutConfirm(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-icon">
+              <AlertTriangle size={32} color="var(--danger)" />
+            </div>
+            <h3 className="modal-title">Keluar dari Akun?</h3>
+            <p className="modal-desc">Kamu akan keluar dari akun ini. Data progress membaca tetap tersimpan.</p>
+            <div className="modal-actions">
+              <button className="modal-btn cancel" onClick={() => setShowLogoutConfirm(false)}>
+                Batal
+              </button>
+              <button className="modal-btn confirm danger" onClick={handleLogout}>
+                Ya, Keluar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

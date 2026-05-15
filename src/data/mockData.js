@@ -102,6 +102,117 @@ export const PACKAGES = [
   },
 ];
 
+// ===== DEMO ACCOUNTS =====
+export const DEMO_ACCOUNTS = [
+  {
+    email: 'free@champion.com',
+    password: 'free123',
+    profile: {
+      name: 'Budi Santoso',
+      email: 'free@champion.com',
+      phone: '081234567890',
+      avatar: '👤',
+      level: 'Pembaca Baru',
+      package: null, // Mode Gratis
+      referralCode: 'BUDI2024',
+      joinDate: '2024-11-15',
+      stats: {
+        booksCompleted: 0,
+        booksInProgress: 0,
+        totalPagesRead: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        totalReadingMinutes: 0,
+        totalEarnedEC: 0,
+        totalReferralEC: 0,
+        referralCount: 0,
+      },
+    },
+    wallet: {
+      earnedBalance: 0,
+      topUpBalance: 0,
+      totalBalance: 0,
+      lifetimeEarned: 0,
+      lifetimeSpent: 0,
+      lifetimeWithdrawn: 0,
+    },
+    transactions: [],
+  },
+  {
+    email: 'premium@champion.com',
+    password: 'premium123',
+    profile: {
+      name: 'Sari Dewi',
+      email: 'premium@champion.com',
+      phone: '089876543210',
+      avatar: '👩',
+      level: 'Pembaca Pro',
+      package: 'reader', // Sudah beli paket Reader
+      referralCode: 'SARI2024',
+      joinDate: '2024-10-01',
+      stats: {
+        booksCompleted: 5,
+        booksInProgress: 2,
+        totalPagesRead: 1250,
+        currentStreak: 4,
+        longestStreak: 14,
+        totalReadingMinutes: 3200,
+        totalEarnedEC: 350,
+        totalReferralEC: 697,
+        referralCount: 6,
+      },
+    },
+    wallet: {
+      earnedBalance: 450,
+      topUpBalance: 200,
+      totalBalance: 650,
+      lifetimeEarned: 1230,
+      lifetimeSpent: 780,
+      lifetimeWithdrawn: 0,
+    },
+    transactions: [
+      { id: 1, type: 'EARN_READ', label: 'Selesai baca: Sapiens', amount: 40, date: '2024-12-28', status: 'COMPLETED' },
+      { id: 2, type: 'EARN_QUIZ_PERFECT', label: 'Quiz Perfect: Sapiens (5/5)', amount: 20, date: '2024-12-28', status: 'COMPLETED' },
+      { id: 3, type: 'EARN_REF', label: 'Referral: Ani (Paket Starter)', amount: 99, date: '2024-12-27', status: 'COMPLETED' },
+      { id: 4, type: 'EARN_READ', label: 'Selesai baca: Atomic Habits', amount: 40, date: '2024-12-26', status: 'COMPLETED' },
+      { id: 5, type: 'EARN_STREAK', label: 'Streak 7 hari berturut', amount: 20, date: '2024-12-26', status: 'COMPLETED' },
+      { id: 6, type: 'EARN_REF', label: 'Referral: Cici (Paket Reader)', amount: 299, date: '2024-12-25', status: 'COMPLETED' },
+      { id: 7, type: 'EARN_READ', label: 'Selesai baca: Ikigai', amount: 40, date: '2024-12-24', status: 'COMPLETED' },
+      { id: 8, type: 'EARN_BONUS', label: 'Tantangan: Baca 4 buku Desember', amount: 50, date: '2024-12-23', status: 'COMPLETED' },
+      { id: 9, type: 'EARN_REF', label: 'Referral: Doni (Paket Reader)', amount: 299, date: '2024-12-22', status: 'COMPLETED' },
+      { id: 10, type: 'SPEND_BOOK', label: 'Beli buku: The Psychology of Money', amount: -150, date: '2024-12-21', status: 'COMPLETED' },
+    ],
+  },
+];
+
+// ===== DYNAMIC USER LOADER =====
+// Load the active user from localStorage, fallback to free account
+export const getActiveUser = () => {
+  try {
+    const saved = localStorage.getItem('champion_current_user');
+    if (saved) return JSON.parse(saved);
+  } catch (e) { /* ignore */ }
+  return DEMO_ACCOUNTS[0].profile;
+};
+
+// For backward compatibility — pages still import MOCK_USER
+// This is a getter that always returns the latest user state
+export const MOCK_USER = new Proxy({}, {
+  get(_, prop) {
+    const user = getActiveUser();
+    return user[prop];
+  },
+  ownKeys() {
+    return Object.keys(getActiveUser());
+  },
+  getOwnPropertyDescriptor(_, prop) {
+    const user = getActiveUser();
+    if (prop in user) {
+      return { configurable: true, enumerable: true, value: user[prop] };
+    }
+  }
+});
+
 export const MOCK_BOOKS = [
   { 
     id: 11, 
@@ -137,29 +248,6 @@ export const MOCK_WALLET = {
   lifetimeEarned: 1230,
   lifetimeSpent: 780,
   lifetimeWithdrawn: 0,
-};
-
-export const MOCK_USER = {
-  name: 'Budi Santoso',
-  email: 'budi@email.com',
-  phone: '081234567890',
-  avatar: '👤',
-  level: 'Pembaca Baru',
-  package: null, // Start as Guest
-  referralCode: 'BUDI2024',
-  joinDate: '2024-11-15',
-  wallet: { ...MOCK_WALLET, totalBalance: 0, earnedBalance: 0 },
-  stats: {
-    booksCompleted: 0,
-    booksInProgress: 0,
-    totalPagesRead: 0,
-    currentStreak: 0,
-    longestStreak: 0,
-    totalReadingMinutes: 0,
-    totalEarnedEC: 0,
-    totalReferralEC: 0,
-    referralCount: 0,
-  },
 };
 
 export const MOCK_TRANSACTIONS = [
