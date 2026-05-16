@@ -229,6 +229,21 @@ export const MOCK_BOOKS = [
     isPremium: false,
     pdfUrl: '/books/speak-book.pdf'
   },
+  {
+    id: 12,
+    title: '150 Kisah Ali Ibn Abi Thalib',
+    author: 'Ahmad Hatta',
+    genre: 'Religi',
+    cover: '/books/ali-cover.png',
+    pages: 300,
+    chapters: 15,
+    rating: 5.0,
+    progress: 0,
+    rewardEC: 50,
+    color: '#34495e',
+    isPremium: true,
+    pdfUrl: '/books/ali-bin-abi-thalib.pdf'
+  },
   { id: 1, title: 'Atomic Habits', author: 'James Clear', genre: 'Self-Help', cover: '📘', pages: 320, chapters: 20, rating: 4.8, progress: 0, rewardEC: 40, color: '#4A90D9', isPremium: true },
   { id: 2, title: 'Filosofi Teras', author: 'Henry Manampiring', genre: 'Filosofi', cover: '📙', pages: 280, chapters: 16, rating: 4.7, progress: 0, rewardEC: 40, color: '#F5A623', isPremium: true },
   { id: 3, title: 'Laut Bercerita', author: 'Leila S. Chudori', genre: 'Fiksi', cover: '📕', pages: 400, chapters: 24, rating: 4.9, progress: 0, rewardEC: 40, color: '#E74C3C', isPremium: true },
