@@ -1591,6 +1591,8 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
 
 .reader-title-info {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
