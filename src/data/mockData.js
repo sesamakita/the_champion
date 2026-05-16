@@ -241,7 +241,7 @@ export const MOCK_BOOKS = [
     progress: 0,
     rewardEC: 50,
     color: '#34495e',
-    isPremium: true,
+    isPremium: false,
     pdfUrl: '/books/ali-bin-abi-thalib.pdf'
   },
   { id: 1, title: 'Atomic Habits', author: 'James Clear', genre: 'Self-Help', cover: '📘', pages: 320, chapters: 20, rating: 4.8, progress: 0, rewardEC: 40, color: '#4A90D9', isPremium: true },
