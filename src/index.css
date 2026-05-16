@@ -26,11 +26,19 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --font-main: 'Montserrat', sans-serif;
     --font-body: 'Montserrat', sans-serif;
-    font-family: var(--font-body);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg-dark); color: var(--text-primary); display: flex; justify-content: center; min-height: 100vh; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: var(--font-body); }
+html, body { 
+    background: var(--bg-dark); 
+    color: var(--text-primary); 
+    min-height: 100vh; 
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+input, button, textarea, select { font-family: var(--font-body); }
+
 #root { width: 100%; max-width: 450px; background: var(--bg-dark); height: 100vh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
