@@ -142,13 +142,13 @@ export const DEMO_ACCOUNTS = [
     email: 'premium@champion.com',
     password: 'premium123',
     profile: {
-      name: 'Sari Dewi',
+      name: 'Icha Syahidah',
       email: 'premium@champion.com',
       phone: '089876543210',
       avatar: '👩',
       level: 'Pembaca Pro',
       package: 'reader', // Sudah beli paket Reader
-      referralCode: 'SARI2024',
+      referralCode: 'ICHA2024',
       joinDate: '2024-10-01',
       stats: {
         booksCompleted: 5,
@@ -270,7 +270,7 @@ export const MOCK_REFERRALS = [
   { id: 3, name: 'Doni Pratama', package: 'Reader', date: '2024-12-22', commissionEC: 299, active: true },
   { id: 4, name: 'Eka Putri', package: 'Starter', date: '2024-12-18', commissionEC: 99, active: true },
   { id: 5, name: 'Fajar Nugroho', package: 'Premium', date: '2024-12-15', commissionEC: 599, active: false },
-  { id: 6, name: 'Gita Sari', package: 'Starter', date: '2024-12-10', commissionEC: 99, active: true },
+  { id: 6, name: 'Gita Icha', package: 'Starter', date: '2024-12-10', commissionEC: 99, active: true },
 ];
 
 export const MOCK_QUIZ = [
