@@ -1561,16 +1561,18 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
   top: 0;
   left: 0;
   width: 100%;
-  height: 76px;
-  background: rgba(255, 255, 255, 0.85);
+  height: 56px;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
-  padding: 0 24px 0 16px;
-  gap: 12px;
+  padding: 0 12px;
+  gap: 8px;
   z-index: 10;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
 }
 
 .reader-header.hidden { transform: translateY(-100%); }
@@ -1610,7 +1612,7 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
 
 .reader-progress-bar {
   position: absolute;
-  top: 70px;
+  top: 54px;
   left: 0;
   width: 100%;
   height: 3px;
@@ -1628,7 +1630,7 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
   flex: 1;
   overflow-y: auto;
   overflow-x: auto;
-  padding: 100px 24px 150px;
+  padding: 80px 24px 150px;
   cursor: pointer;
   -webkit-overflow-scrolling: touch;
 }
@@ -1663,12 +1665,13 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 20px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
+  box-sizing: border-box;
 }
 
 .reader-controls.hidden { transform: translateY(100%); }
@@ -1714,13 +1717,16 @@ body { background: var(--bg-dark); color: var(--text-primary); display: flex; ju
   backdrop-filter: blur(15px);
   border: 1px solid rgba(0,0,0,0.05);
   border-radius: 20px;
-  padding: 12px 20px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   align-self: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .theme-dot {

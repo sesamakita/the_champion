@@ -107,7 +107,7 @@ const BookReader = ({ book, navigateTo, localFile }) => {
             {numPages ? `Halaman ${currentPage} dari ${numPages}` : 'Memuat dokumen...'}
           </span>
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
           {/* Reading Timer Badge */}
           <div className="reader-timer-badge" onClick={(e) => { e.stopPropagation(); setShowSessionStats(!showSessionStats); }}>
             <Clock size={12} />
@@ -370,7 +370,7 @@ const BookReader = ({ book, navigateTo, localFile }) => {
           cursor: pointer;
           transition: all 0.2s ease;
           font-family: 'Courier New', monospace;
-          min-width: 68px;
+          min-width: 62px;
           justify-content: center;
         }
         .reader-timer-badge:hover {
@@ -400,8 +400,8 @@ const BookReader = ({ book, navigateTo, localFile }) => {
         /* === PAGE VALIDATION RING === */
         .reader-page-ring {
           position: fixed;
-          top: 62px;
-          right: 14px;
+          top: 44px;
+          right: 12px;
           z-index: 100;
           opacity: 0.85;
           display: flex;
@@ -452,7 +452,7 @@ const BookReader = ({ book, navigateTo, localFile }) => {
         /* === SESSION STATS PANEL === */
         .reader-session-panel {
           position: fixed;
-          top: 56px;
+          top: 46px;
           right: 12px;
           z-index: 200;
           background: var(--bg-card);
